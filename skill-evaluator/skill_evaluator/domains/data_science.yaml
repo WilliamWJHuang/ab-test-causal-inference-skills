@@ -1,0 +1,85 @@
+# Data Science Domain Rules
+# These rules verify that data science skills provide correct methodological guidance.
+
+domain: data-science
+version: "1.0.0"
+description: >
+  Correctness rules for data science and ML skills. Checks for data leakage
+  prevention, proper cross-validation, missing data handling, and evaluation
+  methodology.
+
+rules:
+  - name: data-leakage-prevention
+    description: >
+      Skills should warn about and prevent data leakage.
+    applicability_patterns:
+      - "feature engineering|preprocessing|train.*test|cross.validation|pipeline"
+    required_patterns:
+      - "leakage|leak|fit.*train.*transform.*test|pipeline|data snooping"
+    antipatterns:
+      - "fit_transform.*(?:entire|all|full).*data"
+    failure_severity: incorrect
+    failure_message: >
+      Discusses preprocessing/feature engineering without mentioning data leakage.
+      Fitting on test data is a critical error that inflates performance estimates.
+    success_message: "Correctly addresses data leakage prevention."
+
+  - name: missing-data-mechanism
+    description: >
+      Missing data handling should consider the missingness mechanism.
+    applicability_patterns:
+      - "missing.*data|imputation|NaN|null|dropna"
+    required_patterns:
+      - "MCAR|MAR|MNAR|missing.*random|missingness.*mechanism|little.*test"
+    antipatterns:
+      - "just drop|simply remove|always impute with mean"
+    failure_severity: suspicious
+    failure_message: >
+      Discusses missing data without mentioning the missingness mechanism.
+      The correct imputation method depends on whether data is MCAR, MAR, or MNAR.
+    success_message: "Correctly addresses missingness mechanisms."
+
+  - name: cross-validation-methodology
+    description: >
+      Cross-validation should be done correctly (no leakage, correct strategy).
+    applicability_patterns:
+      - "cross.validation|k-fold|CV|validation set"
+    required_patterns:
+      - "stratif|group|time series split|leakage|nested|pipeline"
+    antipatterns:
+      - "random split.*time series"
+    failure_severity: suspicious
+    failure_message: >
+      Discusses cross-validation without addressing stratification, grouping,
+      or temporal considerations. Naive random splits can be invalid.
+    success_message: "Correctly addresses cross-validation methodology."
+
+  - name: evaluation-metric-selection
+    description: >
+      Appropriate metrics should be selected based on the problem type.
+    applicability_patterns:
+      - "metric|accuracy|precision|recall|F1|AUC|RMSE"
+    required_patterns:
+      - "imbalanced|class.distribution|threshold|tradeoff|business.*metric|domain.*specific"
+    antipatterns:
+      - "accuracy is the best|always use accuracy"
+    failure_severity: suspicious
+    failure_message: >
+      Discusses evaluation metrics without mentioning class imbalance considerations
+      or the importance of aligning metrics with business objectives.
+    success_message: "Correctly addresses metric selection for different problem types."
+
+  - name: outlier-handling
+    description: >
+      Outlier handling should be thoughtful, not automatic removal.
+    applicability_patterns:
+      - "outlier|anomal|extreme value"
+    required_patterns:
+      - "domain knowledge|investigate|root cause|robust|winsoriz|IQR|z-score"
+    antipatterns:
+      - "always remove outliers|drop all outliers"
+    failure_severity: suspicious
+    failure_message: >
+      Discusses outliers without encouraging investigation of root causes.
+      Automatic outlier removal can introduce survivorship bias.
+    success_message: "Correctly addresses thoughtful outlier handling."

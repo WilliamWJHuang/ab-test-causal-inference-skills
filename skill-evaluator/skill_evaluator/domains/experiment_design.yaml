@@ -1,0 +1,125 @@
+# Experiment Design Domain Rules
+# These rules verify that experiment design skills provide correct methodological guidance.
+
+domain: experiment-design
+version: "1.0.0"
+description: >
+  Correctness rules for experiment design skills. Checks for proper power analysis,
+  randomization, variance reduction, pre-registration, and metric definition.
+
+rules:
+  - name: power-analysis-mandatory
+    description: >
+      Experiment design must include formal power analysis, not rule-of-thumb sample sizes.
+    applicability_patterns:
+      - "sample size|experiment design|a/b test|ab test|power"
+    required_patterns:
+      - "power analysis|minimum detectable effect|MDE|statistical power|power.*80|power.*0\\.8"
+    antipatterns:
+      - "rule of thumb.*(?:30|100|1000)"
+    failure_severity: incorrect
+    failure_message: >
+      Discusses experiment design without requiring formal power analysis.
+      Rule-of-thumb sample sizes are statistically unsound.
+    success_message: "Correctly requires formal power analysis for sample size determination."
+
+  - name: randomization-strategy
+    description: >
+      Experiments must specify a randomization strategy.
+    applicability_patterns:
+      - "experiment|a/b test|treatment|control group"
+    required_patterns:
+      - "randomiz|random assignment|stratif|block|cluster"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses experimental design without specifying a randomization strategy.
+      Proper randomization is the foundation of causal identification in experiments.
+    success_message: "Correctly addresses randomization strategy."
+
+  - name: variance-reduction-awareness
+    description: >
+      Modern experiment design should mention variance reduction techniques.
+    applicability_patterns:
+      - "a/b test|experiment|variance|precision|sensitivity"
+    required_patterns:
+      - "CUPED|CUPAC|variance reduction|stratif|covariate|pre-experiment|regression adjustment"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses A/B testing without mentioning variance reduction methods (CUPED/CUPAC).
+      These techniques can reduce required sample sizes by 20-50%.
+    success_message: "Correctly addresses variance reduction techniques."
+
+  - name: pre-registration
+    description: >
+      Experiments should be pre-registered to prevent p-hacking and HARKing.
+    applicability_patterns:
+      - "experiment|hypothesis|a/b test|analysis plan"
+    required_patterns:
+      - "pre-regist|pre regist|analysis plan|pre-analysis|protocol"
+    antipatterns:
+      - "look at the data first|explore.*before.*hypothesis"
+    failure_severity: suspicious
+    failure_message: >
+      Does not mention pre-registration or pre-analysis plans.
+      Without pre-registration, there is no defense against HARKing.
+    success_message: "Correctly requires pre-registration or pre-analysis plans."
+
+  - name: primary-metric-definition
+    description: >
+      Experiments must define a primary metric (OEC) before launch.
+    applicability_patterns:
+      - "metric|KPI|success.*criteria|experiment|a/b test"
+    required_patterns:
+      - "primary.*metric|overall evaluation criterion|OEC|success metric|north star|guardrail metric|primary.*secondary"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Does not require defining a primary evaluation metric before experiment launch.
+      Without a pre-specified primary metric, multiple testing issues arise.
+    success_message: "Correctly requires primary metric definition."
+
+  - name: sequential-testing-awareness
+    description: >
+      Skills should address the peeking problem and sequential testing.
+    applicability_patterns:
+      - "a/b test|experiment|peek|early stop|monitor"
+    required_patterns:
+      - "sequential|peek|early stopping|group sequential|always valid|continuous monitor"
+    antipatterns:
+      - "check daily.*stop.*significant"
+    failure_severity: suspicious
+    failure_message: >
+      Does not address the peeking problem. Checking results before the
+      experiment is complete inflates false positive rates.
+    success_message: "Correctly addresses sequential testing and the peeking problem."
+
+  - name: srm-check
+    description: >
+      Experiment analysis should include a Sample Ratio Mismatch check.
+    applicability_patterns:
+      - "a/b test|experiment|randomiz|treatment.*control"
+    required_patterns:
+      - "SRM|sample ratio mismatch|chi-squared.*ratio|balance check|randomization check"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Does not mention SRM (Sample Ratio Mismatch) checks. SRM is the single
+      most important diagnostic — if the sample ratio is off, all results are invalid.
+    success_message: "Correctly requires Sample Ratio Mismatch checks."
+
+  - name: effect-size-over-significance
+    description: >
+      Results should emphasize practical significance (effect size) over statistical significance.
+    applicability_patterns:
+      - "result|significant|p-value|outcome|conclusion"
+    required_patterns:
+      - "effect size|practical significance|confidence interval|CI|substantive"
+    antipatterns:
+      - "the result is significant"
+    failure_severity: suspicious
+    failure_message: >
+      Focuses on statistical significance without emphasizing effect sizes
+      and practical significance.
+    success_message: "Correctly emphasizes effect sizes over statistical significance."

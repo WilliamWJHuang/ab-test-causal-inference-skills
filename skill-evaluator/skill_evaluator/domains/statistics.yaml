@@ -1,0 +1,133 @@
+# Statistics Domain Rules
+# These rules verify that a statistics-focused skill provides correct guidance.
+# Each rule has applicability patterns (when it should fire) and required patterns
+# (what correct guidance looks like).
+
+domain: statistics
+version: "1.0.0"
+description: >
+  Correctness rules for statistical methodology skills. Checks for proper test
+  selection, assumption verification, effect size reporting, multiple comparison
+  corrections, and power analysis requirements.
+
+rules:
+  - name: normality-check-before-parametric
+    description: >
+      When recommending parametric tests (t-test, ANOVA), the skill should
+      mention checking normality assumptions.
+    applicability_patterns:
+      - "t-test|t test"
+      - "anova|analysis of variance"
+    required_patterns:
+      - "normal|normality|shapiro|kolmogorov|q-q plot|qqplot|distribution"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Recommends parametric tests (t-test/ANOVA) without mentioning normality
+      checks. Parametric tests assume normality — this should be verified or
+      non-parametric alternatives should be offered.
+    success_message: "Correctly addresses normality assumptions for parametric tests."
+
+  - name: effect-size-reporting
+    description: >
+      Statistical results should include effect sizes, not just p-values.
+    applicability_patterns:
+      - "p-value|p value|significance|hypothesis test"
+    required_patterns:
+      - "effect size|cohen|eta.squared|odds ratio|risk ratio|confidence interval|CI"
+    antipatterns:
+      - "the result is significant"
+    failure_severity: suspicious
+    failure_message: >
+      Discusses statistical significance without mentioning effect sizes.
+      P-values alone are insufficient — effect sizes and confidence intervals
+      should always be reported (APA 7th edition, ASA Statement on p-values).
+    success_message: "Correctly requires effect size reporting alongside significance testing."
+
+  - name: multiple-comparison-correction
+    description: >
+      When running multiple hypothesis tests, correction methods should be mentioned.
+    applicability_patterns:
+      - "multiple.*test|multiple.*comparison|family.wise|pairwise"
+    required_patterns:
+      - "bonferroni|holm|benjamini|hochberg|BH|FDR|false discovery|correction|adjustment|šidák|sidak"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses multiple comparisons without mentioning correction methods.
+      Without correction, the family-wise error rate inflates rapidly.
+    success_message: "Correctly addresses multiple comparison corrections."
+
+  - name: power-analysis-requirement
+    description: >
+      Experiment design should include power analysis for sample size determination.
+    applicability_patterns:
+      - "sample size|experiment design|a/b test|ab test"
+    required_patterns:
+      - "power|minimum detectable effect|MDE|sample size calculation"
+    antipatterns:
+      - "rule of thumb.*(?:30|100|1000)"
+    failure_severity: suspicious
+    failure_message: >
+      Discusses sample size determination without power analysis.
+      Rule-of-thumb sample sizes (e.g., "use N=30") are statistically unsound.
+    success_message: "Correctly requires power analysis for sample size determination."
+
+  - name: non-parametric-alternatives
+    description: >
+      When data may not meet parametric assumptions, non-parametric alternatives
+      should be mentioned.
+    applicability_patterns:
+      - "non-normal|skewed|ordinal|rank|outlier"
+    required_patterns:
+      - "mann-whitney|wilcoxon|kruskal|spearman|bootstrap|permutation|rank"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Acknowledges non-normal data but doesn't mention non-parametric alternatives.
+    success_message: "Correctly offers non-parametric alternatives for non-normal data."
+
+  - name: seed-sensitivity
+    description: >
+      ML evaluation should check for seed sensitivity rather than reporting
+      single-seed results.
+    applicability_patterns:
+      - "random seed|seed|reproducib|machine learning|deep learning|neural network"
+    required_patterns:
+      - "multiple seeds|seed sensitivity|seed instability|mean.*std|variance across|aggregate.*seeds"
+    antipatterns:
+      - "set seed to 42|seed=42 for reproducibility"
+    failure_severity: suspicious
+    failure_message: >
+      Mentions random seeds without addressing seed sensitivity. Single-seed
+      results can be misleading — reporting mean ± std across seeds is essential.
+    success_message: "Correctly addresses seed sensitivity in ML evaluation."
+
+  - name: bayesian-vs-frequentist-clarity
+    description: >
+      When both paradigms are mentioned, the skill should help users choose
+      rather than conflating them.
+    applicability_patterns:
+      - "bayesian.*frequentist|frequentist.*bayesian"
+    required_patterns:
+      - "prior|posterior|credible interval|when to use|tradeoff|paradigm"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Mentions both Bayesian and frequentist approaches without clear guidance
+      on when to use each.
+    success_message: "Provides clear guidance on Bayesian vs. frequentist approaches."
+
+  - name: regression-assumptions
+    description: >
+      Linear regression guidance should address key assumptions.
+    applicability_patterns:
+      - "linear regression|OLS|ordinary least squares"
+    required_patterns:
+      - "linearity|homoscedasticity|heteroscedasticity|multicollinearity|VIF|residual|autocorrelation"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses linear regression without mentioning key assumptions
+      (linearity, homoscedasticity, no multicollinearity, etc.).
+    success_message: "Correctly addresses regression assumptions."

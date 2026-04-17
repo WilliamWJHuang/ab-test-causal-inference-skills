@@ -1,0 +1,122 @@
+# Causal Inference Domain Rules
+# These rules verify that a causal inference skill provides correct methodological guidance.
+
+domain: causal-inference
+version: "1.0.0"
+description: >
+  Correctness rules for causal inference skills. Checks for proper identification
+  strategies, assumption documentation, refutation tests, and method selection.
+
+rules:
+  - name: identification-strategy-required
+    description: >
+      Any causal claim must have an explicit identification strategy.
+    applicability_patterns:
+      - "causal|treatment effect|intervention|counterfactual"
+    required_patterns:
+      - "identification|identifying assumption|exogeneity|ignorability|unconfoundedness|as-if random|natural experiment"
+    antipatterns:
+      - "correlation implies|correlation means|proves causation"
+    failure_severity: incorrect
+    failure_message: >
+      Makes or facilitates causal claims without requiring an identification strategy.
+      Without identification, causal estimates are uninterpretable.
+    success_message: "Correctly requires identification strategy for causal claims."
+
+  - name: refutation-tests
+    description: >
+      Causal estimates should be validated with refutation/falsification tests.
+    applicability_patterns:
+      - "causal|treatment effect|DiD|difference.in.difference|synthetic control|instrumental variable"
+    required_patterns:
+      - "refutation|falsification|placebo|robustness check|sensitivity analysis|rosenbaum|e-value"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses causal estimation without mentioning refutation or sensitivity tests.
+      Refutation tests (placebo, sensitivity analysis) are essential for credibility.
+    success_message: "Correctly requires refutation tests for causal estimates."
+
+  - name: did-parallel-trends
+    description: >
+      Difference-in-Differences requires parallel trends assumption.
+    applicability_patterns:
+      - "difference.in.difference|DiD|diff-in-diff"
+    required_patterns:
+      - "parallel trend|pre-trend|common trend|pre-treatment"
+    antipatterns: []
+    failure_severity: incorrect
+    failure_message: >
+      Discusses DiD without mentioning the parallel trends assumption.
+      This is THE identifying assumption for DiD — omitting it is a critical error.
+    success_message: "Correctly addresses parallel trends assumption for DiD."
+
+  - name: iv-relevance-and-exclusion
+    description: >
+      Instrumental variable methods require both relevance and exclusion restriction.
+    applicability_patterns:
+      - "instrumental variable|IV|2SLS|two.stage"
+    required_patterns:
+      - "relevance|first.stage|F.statistic|exclusion restriction|exogeneity"
+    antipatterns: []
+    failure_severity: incorrect
+    failure_message: >
+      Discusses IV estimation without mentioning both relevance (strong first stage)
+      and exclusion restriction. Both are required for valid IV estimation.
+    success_message: "Correctly addresses IV relevance and exclusion restriction."
+
+  - name: rdd-bandwidth-sensitivity
+    description: >
+      RDD estimates should address bandwidth selection and sensitivity.
+    applicability_patterns:
+      - "regression discontinuity|RDD|RD design|running variable|cutoff"
+    required_patterns:
+      - "bandwidth|kernel|sensitivity|manipulation|McCrary|density test"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses RDD without mentioning bandwidth selection or manipulation tests.
+    success_message: "Correctly addresses RDD bandwidth and manipulation testing."
+
+  - name: matching-balance-check
+    description: >
+      Matching methods require balance checks after matching.
+    applicability_patterns:
+      - "propensity score|matching|PSM|coarsened exact matching|CEM"
+    required_patterns:
+      - "balance|standardized mean difference|SMD|overlap|common support|covariate balance"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses matching/PSM without mentioning balance checking.
+      Matched samples must be verified for covariate balance (SMD < 0.1).
+    success_message: "Correctly requires balance checks for matching methods."
+
+  - name: heterogeneous-treatment-effects
+    description: >
+      Modern causal inference should address treatment effect heterogeneity.
+    applicability_patterns:
+      - "treatment effect|ATE|CATE|HTE|heterogen"
+    required_patterns:
+      - "heterogen|subgroup|CATE|conditional average|causal forest|meta.learner|X-learner|T-learner|S-learner"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Focuses only on average treatment effects without addressing heterogeneity.
+      Treatment effects often vary across subgroups — HTE analysis is important.
+    success_message: "Correctly addresses heterogeneous treatment effects."
+
+  - name: observational-vs-experimental
+    description: >
+      Skills should clearly distinguish observational from experimental data
+      and adjust methodology accordingly.
+    applicability_patterns:
+      - "observational|experiment|RCT|randomized"
+    required_patterns:
+      - "observational.*experimental|experimental.*observational|RCT|randomiz|selection bias|confound"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Does not clearly distinguish between observational and experimental settings.
+      The available methods differ dramatically between these settings.
+    success_message: "Correctly distinguishes observational from experimental data."
