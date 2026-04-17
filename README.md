@@ -268,7 +268,7 @@ Most people should just install `causal-data-science/` and get everything.
 
 ## Skill evaluator
 
-The repo also has a [skill-evaluator](skill-evaluator/) CLI that scores any SKILL.md on structure, security, quality, and domain correctness. Basically a linter for agent skills. More details in the [skill-evaluator README](skill-evaluator/README.md).
+There's also a separate [skill-evaluator](https://github.com/WilliamWJHuang/skill-evaluator) tool that scores any SKILL.md on structure, security, quality, and domain correctness. Basically a linter for agent skills.
 
 ## Design philosophy
 
