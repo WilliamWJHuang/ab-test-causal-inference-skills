@@ -17,7 +17,12 @@ This skill gives them one. It enforces power analysis, forces assumption checks 
 
 ## Who this is for
 
-**Data scientists** running A/B tests who want the agent to enforce rigor without being told to. **Product managers and analysts** who work with experiments but don't have a stats background — the skill adjusts its explanations to your level. **Causal inference folks** using DiD, RDD, IV, matching, etc. who want the agent to follow a proper identify → estimate → refute pipeline. **ML engineers** who need to catch things like seed cherry-picking and test set contamination. **Students and researchers** who are still learning — the skill explains its reasoning as it goes. Or really anyone using an agent for data work who'd rather it act like a careful statistician than a code autocomplete.
+**Data scientists** running A/B tests who want the agent to enforce rigor without being told to. 
+**Product managers and analysts** who work with experiments but don't have a stats background — the skill adjusts its explanations to your level. 
+**Causal inference folks** using DiD, RDD, IV, matching, etc. who want the agent to follow a proper identify → estimate → refute pipeline. 
+**ML engineers** who need to catch things like seed cherry-picking and test set contamination. 
+**Students and researchers** who are still learning — the skill explains its reasoning as it goes. 
+Or really anyone using an agent for data work who'd rather it act like a careful statistician than a code autocomplete.
 
 ## Quick start
 
