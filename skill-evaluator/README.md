@@ -126,6 +126,8 @@ rules:
     success_message: "What went right"
 ```
 
+We ship with Statistics, Causal Inference, and Data Science domains, but this is meant to be extensible. If you have domain expertise in another area (e.g., epidemiology, finance, NLP evaluation, survey design) and want to contribute a rule set, open a PR with your YAML file and we'll review it. The more domains covered, the more useful this tool becomes for everyone.
+
 ---
 
 ## CI Integration

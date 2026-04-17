@@ -268,7 +268,7 @@ Most people should just install `causal-data-science/` and get everything.
 
 ## Skill evaluator
 
-There's also a separate [skill-evaluator](https://github.com/WilliamWJHuang/skill-evaluator) tool that scores any SKILL.md on structure, security, quality, and domain correctness. Basically a linter for agent skills.
+There's also a separate [agent-skill-evaluator](https://github.com/WilliamWJHuang/agent-skill-evaluator) tool that scores any SKILL.md on structure, security, quality, and domain correctness. Basically a linter for agent skills.
 
 ## Design philosophy
 
