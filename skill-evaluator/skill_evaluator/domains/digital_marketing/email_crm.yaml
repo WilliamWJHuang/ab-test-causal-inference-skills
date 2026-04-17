@@ -1,0 +1,62 @@
+# Digital Marketing — Email / CRM Marketing Rules
+# Practitioner best-practice rules for email marketing and CRM.
+# Severity is "suspicious" (lenient) since best practices vary by industry.
+
+domain: digital-marketing
+subdomain: email-crm
+version: "1.0.0"
+description: >
+  Best-practice rules for email and CRM marketing. Checks for deliverability
+  awareness, list hygiene/consent, and personalization methodology.
+
+rules:
+  - name: email-deliverability-fundamentals
+    description: >
+      Email marketing skills must address deliverability infrastructure —
+      authentication (SPF, DKIM, DMARC), sender reputation, and inbox
+      placement.
+    applicability_patterns:
+      - "email.*market|email.*campaign|newsletter|email.*strategy|email.*automation"
+    required_patterns:
+      - "deliverability|SPF|DKIM|DMARC|sender.*reputation|inbox.*placement|spam|bounce|warm.?up|authentication"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses email marketing without addressing deliverability fundamentals.
+      Even the best email content is worthless if it lands in spam. SPF, DKIM,
+      and DMARC authentication are table stakes.
+    success_message: "Correctly addresses email deliverability fundamentals."
+
+  - name: list-hygiene-and-consent
+    description: >
+      Email skills must mention list hygiene (removing bounces, inactive
+      subscribers) and proper consent management (opt-in, opt-out, CAN-SPAM,
+      GDPR).
+    applicability_patterns:
+      - "email.*list|subscriber|opt.?in|email.*campaign|email.*market"
+    required_patterns:
+      - "hygiene|clean|inactive|bounce.*removal|opt.?in|opt.?out|consent|unsubscribe|CAN-SPAM|GDPR|double.*opt|permission|suppression"
+    antipatterns:
+      - "buy.*(?:list|email)|purchased.*(?:list|email)|never.*(?:remove|clean|unsubscribe)"
+    failure_severity: suspicious
+    failure_message: >
+      Discusses email lists without addressing list hygiene or consent
+      management. Sending to unengaged subscribers damages sender reputation,
+      and violating consent regulations carries legal risk.
+    success_message: "Correctly addresses list hygiene and consent management."
+
+  - name: personalization-methodology
+    description: >
+      Personalization should go beyond "Hi {first_name}" to include behavioral
+      signals, dynamic content, and segmentation-based personalization.
+    applicability_patterns:
+      - "personali|dynamic.*content|email.*segment|email.*target|email.*relevance"
+    required_patterns:
+      - "behavior|engagement|purchase.*history|browse|dynamic.*content|segment|recommend|lifecycle|trigger|automat|journey"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses email personalization without going beyond name insertion.
+      Effective personalization uses behavioral signals (purchase history,
+      browsing behavior, engagement patterns) and lifecycle stage.
+    success_message: "Correctly addresses behavioral-driven personalization."

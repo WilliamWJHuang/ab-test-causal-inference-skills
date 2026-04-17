@@ -1,0 +1,84 @@
+# Digital Marketing — Customer Analytics Rules
+# These rules verify that customer analytics skills use principled methodology
+# for CLV, churn, segmentation, and cohort analysis.
+
+domain: digital-marketing
+subdomain: customer-analytics
+version: "1.0.0"
+description: >
+  Correctness rules for customer analytics in marketing. Checks for proper CLV
+  methodology, churn definition, segmentation rigor, and cohort analysis.
+
+rules:
+  - name: clv-methodology
+    description: >
+      Customer Lifetime Value calculations must specify the modeling approach
+      (probabilistic vs. contractual vs. simple historic), discount rate, and
+      prediction horizon. CLV is not just "average revenue per customer."
+    applicability_patterns:
+      - "CLV|customer lifetime value|LTV|lifetime value|customer.*value"
+    required_patterns:
+      - "probabilistic|BG/NBD|pareto.*NBD|contractual|discount.*rate|time.*horizon|prediction.*window|retention.*rate|churn.*rate|monetary.*value"
+    antipatterns:
+      - "CLV.*=.*average.*revenue|simply.*multiply.*avg|just.*(?:sum|total|average).*revenue"
+    failure_severity: incorrect
+    failure_message: >
+      Discusses CLV/LTV without specifying methodology. "CLV = average revenue
+      × average lifespan" ignores heterogeneity in purchase behavior,
+      discounting, and the distinction between contractual and non-contractual
+      settings. Use probabilistic models (BG/NBD, Pareto/NBD) for
+      non-contractual; survival models for contractual.
+    success_message: "Correctly specifies CLV methodology with proper modeling approach."
+
+  - name: churn-definition-clarity
+    description: >
+      Churn prediction must define churn operationally — what constitutes
+      "churned" varies dramatically by business model (contractual vs.
+      non-contractual, subscription vs. transactional).
+    applicability_patterns:
+      - "churn|retention|customer.*attrition|customer.*loss"
+    required_patterns:
+      - "defin|threshold|inactiv|window|contract|subscription|non.?contractual|operational|criteria|recency"
+    antipatterns:
+      - "customer (?:simply |just )?(?:left|stopped|gone)"
+    failure_severity: suspicious
+    failure_message: >
+      Discusses churn without defining it operationally. In non-contractual
+      settings (e-commerce, apps), churn is inherently ambiguous — you must
+      define an inactivity window and justify the threshold.
+    success_message: "Correctly defines churn with operational criteria."
+
+  - name: segmentation-methodology
+    description: >
+      Customer segmentation should use principled methods, not arbitrary
+      thresholds. RFM with proper binning, clustering with validation metrics,
+      or latent class models.
+    applicability_patterns:
+      - "segment|cluster|persona|customer.*group|customer.*type|RFM"
+    required_patterns:
+      - "RFM|recency.*frequency.*monetary|k-means|hierarchical|silhouette|cluster.*valid|latent.*class|behavior|data.*driven|scoring"
+    antipatterns:
+      - "(?:manually|arbitrarily).*(?:define|create|split).*segment"
+    failure_severity: suspicious
+    failure_message: >
+      Discusses customer segmentation without a principled methodology.
+      Arbitrary segments ("high-value = revenue > $1000") lack statistical
+      basis and are fragile to distribution shifts.
+    success_message: "Correctly uses principled segmentation methodology."
+
+  - name: cohort-analysis-requirements
+    description: >
+      Cohort analysis must control for cohort size attrition and seasonality.
+      Raw retention curves are misleading if cohorts shrink at different rates
+      or if seasonal effects are not accounted for.
+    applicability_patterns:
+      - "cohort|retention.*curve|retention.*rate|customer.*lifecycle"
+    required_patterns:
+      - "cohort.*size|normali|season|control|attrition|survival|censoring|time.*period|base.*period"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses cohort analysis without addressing cohort size decay or
+      seasonality effects. Retention curves must be normalized by initial
+      cohort size and compared across comparable time periods.
+    success_message: "Correctly addresses cohort analysis methodology."

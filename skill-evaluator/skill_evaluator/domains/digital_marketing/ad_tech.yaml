@@ -1,0 +1,59 @@
+# Digital Marketing — Ad Tech / Programmatic Rules
+# Mixed methodological and practitioner rules for programmatic advertising,
+# ad exchanges, and ad serving.
+
+domain: digital-marketing
+subdomain: ad-tech
+version: "1.0.0"
+description: >
+  Rules for programmatic advertising and ad tech. Checks for bidding strategy
+  methodology, frequency capping, viewability, and fraud awareness.
+
+rules:
+  - name: bidding-strategy-methodology
+    description: >
+      Programmatic bidding discussions should address auction mechanics
+      (first-price vs. second-price), bid shading, and floor prices.
+    applicability_patterns:
+      - "programmatic|RTB|real.?time.*bid|DSP|ad.*exchange|impression.*bid|auction.*bid"
+    required_patterns:
+      - "first.?price|second.?price|bid.*shad|floor.*price|auction|supply.*path|header.*bid|clearing.*price|winning.*bid"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses programmatic advertising without addressing auction mechanics.
+      The shift from second-price to first-price auctions fundamentally
+      changed bidding strategy — bid shading is now essential.
+    success_message: "Correctly addresses programmatic auction mechanics."
+
+  - name: frequency-capping-awareness
+    description: >
+      Ad serving skills must address frequency capping to prevent ad fatigue,
+      wasted spend, and negative brand impact from over-exposure.
+    applicability_patterns:
+      - "programmatic|display.*ad|ad.*serv|impression|ad.*campaign|media.*buy"
+    required_patterns:
+      - "frequency.*cap|ad.*fatigue|over.?exposure|impression.*limit|recency|frequency.*optim|optimal.*frequency"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses ad serving without addressing frequency capping. Uncontrolled
+      frequency wastes budget on diminishing returns and can cause negative
+      brand sentiment from ad fatigue.
+    success_message: "Correctly addresses frequency capping and ad fatigue prevention."
+
+  - name: viewability-and-fraud
+    description: >
+      Should mention viewability standards (MRC definition: 50% of pixels
+      visible for 1+ seconds) and invalid traffic (IVT) / ad fraud.
+    applicability_patterns:
+      - "viewability|display.*ad|programmatic|ad.*impression|ad.*metric|ad.*verification"
+    required_patterns:
+      - "viewab|MRC|in.?view|invalid.*traffic|IVT|fraud|bot|brand.*safety|verification|MOAT|IAS|DoubleVerify"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses ad impressions without addressing viewability standards or
+      ad fraud. Not all served impressions are viewable, and ad fraud can
+      consume 5-20% of programmatic budgets.
+    success_message: "Correctly addresses viewability and ad fraud prevention."

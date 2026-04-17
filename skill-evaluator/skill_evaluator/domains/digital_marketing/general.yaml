@@ -1,0 +1,80 @@
+# Digital Marketing — General Rules
+# Foundational best-practice rules that apply broadly across digital marketing.
+# Severity is "suspicious" (lenient) to serve as nudges rather than hard blocks.
+
+domain: digital-marketing
+subdomain: general
+version: "1.0.0"
+description: >
+  Cross-cutting rules for digital marketing skills. Covers marketing funnel
+  awareness, privacy compliance, tracking infrastructure, and KPI alignment.
+
+rules:
+  - name: marketing-funnel-understanding
+    description: >
+      Digital marketing skills should reference the customer journey and funnel
+      stages — marketing tactics and metrics differ dramatically between
+      awareness, consideration, conversion, and retention stages.
+    applicability_patterns:
+      - "digital.*marketing|marketing.*strategy|campaign.*strategy|marketing.*plan|customer.*acquisition"
+    required_patterns:
+      - "funnel|awareness|consideration|conversion|retention|TOFU|MOFU|BOFU|customer.*journey|buyer.*journey|lifecycle|acquisition.*retention"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses digital marketing strategy without referencing the customer
+      journey or funnel stages. Marketing tactics, KPIs, and attribution
+      logic all depend on where the customer is in the funnel.
+    success_message: "Correctly references customer journey / funnel stages."
+
+  - name: privacy-compliance-awareness
+    description: >
+      Digital marketing skills must address privacy regulations and consent
+      frameworks, especially in the context of tracking and targeting.
+    applicability_patterns:
+      - "digital.*marketing|tracking|target|audience|data.*collect|marketing.*data|retarget|cookie"
+    required_patterns:
+      - "GDPR|CCPA|CPRA|privacy|consent|cookie|third.?party|first.?party|opt.?in|opt.?out|data.*protection|iOS.*14|ATT|App.*Tracking|cookieless|privacy.*sandbox"
+    antipatterns:
+      - "ignore.*(?:privacy|consent|regulation|GDPR)"
+    failure_severity: suspicious
+    failure_message: >
+      Discusses marketing data collection or targeting without addressing
+      privacy compliance. GDPR, CCPA, and iOS ATT have fundamentally changed
+      what data is available — skills must acknowledge these constraints.
+    success_message: "Correctly addresses privacy compliance in marketing."
+
+  - name: tracking-infrastructure
+    description: >
+      Should mention tracking fundamentals: UTM parameters for campaign
+      attribution, tag management (GTM), and the shift to server-side
+      tracking.
+    applicability_patterns:
+      - "track|campaign.*measur|marketing.*analytics|UTM|tag.*manage|pixel|conversion.*track"
+    required_patterns:
+      - "UTM|tag.*manage|GTM|Google Tag|pixel|server.?side|first.?party.*data|conversion.*API|CAPI|measurement.*protocol|event.*track"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses marketing tracking without covering tracking infrastructure
+      fundamentals. UTM parameters, tag management, and the transition to
+      server-side tracking are essential for reliable measurement.
+    success_message: "Correctly addresses tracking infrastructure fundamentals."
+
+  - name: kpi-alignment
+    description: >
+      Marketing KPIs should be tied to business outcomes, not vanity metrics.
+      Skills should distinguish between leading indicators (CTR, engagement)
+      and lagging outcomes (revenue, LTV, profit).
+    applicability_patterns:
+      - "KPI|metric|dashboard|report|performance.*market|market.*perform|ROI|success.*criteria"
+    required_patterns:
+      - "business.*outcome|revenue|profit|LTV|ROI|ROAS|vanity|leading.*indicator|lagging|actionab|north.*star|OKR|guardrail|alignment"
+    antipatterns:
+      - "(?:follower|like|impression).*(?:count|number).*(?:is|as).*(?:the|our|primary|main).*(?:KPI|metric|goal)"
+    failure_severity: suspicious
+    failure_message: >
+      Discusses marketing KPIs without tying them to business outcomes.
+      Likes, followers, and impressions are vanity metrics — marketing
+      measurement should ladder up to revenue, profit, or customer LTV.
+    success_message: "Correctly ties marketing KPIs to business outcomes."

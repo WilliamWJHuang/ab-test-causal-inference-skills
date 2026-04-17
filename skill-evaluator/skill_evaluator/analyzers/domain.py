@@ -178,6 +178,16 @@ class DomainCorrectnessAnalyzer:
                 "a/b test", "experiment design", "randomization", "sample size",
                 "power analysis", "cuped", "variance reduction", "pre-registration",
             ],
+            "digital-marketing": [
+                "attribution", "marketing mix", "CLV", "customer lifetime value",
+                "SEO", "SEM", "PPC", "pay per click", "ad spend", "ROAS",
+                "return on ad spend", "conversion rate optimization", "CRO",
+                "email marketing", "landing page", "funnel",
+                "programmatic", "retargeting", "remarketing", "digital advertising",
+                "google ads", "facebook ads", "meta ads", "social media marketing",
+                "content marketing", "CTR", "click.through rate", "CPM", "CPC",
+                "cost per click", "ad creative", "marketing automation",
+            ],
         }
 
         scores: dict[str, int] = {}
@@ -195,40 +205,56 @@ class DomainCorrectnessAnalyzer:
         return max(scores, key=scores.get)  # type: ignore[arg-type]
 
     def _load_rules(self, domain: str) -> list[DomainRule]:
-        """Load rules for a given domain from YAML files."""
+        """Load rules for a given domain from YAML files.
+
+        Supports two layouts:
+          1. Single file:  domains/{domain}.yaml  (or with underscores)
+          2. Directory:    domains/{domain}/*.yaml  (for multi-file domains)
+        Both can coexist — rules are merged when both are present.
+        """
         if domain in self._rule_cache:
             return self._rule_cache[domain]
 
-        # Try loading from YAML file
-        yaml_file = self.domains_dir / f"{domain}.yaml"
-        if not yaml_file.exists():
-            # Try with underscores
-            yaml_file = self.domains_dir / f"{domain.replace('-', '_')}.yaml"
+        yaml_sources: list[Path] = []
 
-        if not yaml_file.exists():
+        # --- Single-file lookup ---
+        for name_variant in (domain, domain.replace("-", "_")):
+            candidate = self.domains_dir / f"{name_variant}.yaml"
+            if candidate.exists():
+                yaml_sources.append(candidate)
+                break  # Use first match
+
+        # --- Directory lookup (multi-file domains) ---
+        for name_variant in (domain, domain.replace("-", "_")):
+            candidate_dir = self.domains_dir / name_variant
+            if candidate_dir.is_dir():
+                yaml_sources.extend(sorted(candidate_dir.glob("*.yaml")))
+                break  # Use first match
+
+        if not yaml_sources:
             self._rule_cache[domain] = []
             return []
 
-        try:
-            raw = yaml.safe_load(yaml_file.read_text(encoding="utf-8"))
-        except (yaml.YAMLError, OSError):
-            self._rule_cache[domain] = []
-            return []
+        rules: list[DomainRule] = []
+        for yaml_file in yaml_sources:
+            try:
+                raw = yaml.safe_load(yaml_file.read_text(encoding="utf-8"))
+            except (yaml.YAMLError, OSError):
+                continue
 
-        rules = []
-        for rule_data in raw.get("rules", []):
-            rules.append(
-                DomainRule(
-                    name=rule_data.get("name", "unnamed"),
-                    description=rule_data.get("description", ""),
-                    applicability_patterns=rule_data.get("applicability_patterns", []),
-                    required_patterns=rule_data.get("required_patterns", []),
-                    antipatterns=rule_data.get("antipatterns", []),
-                    failure_severity=rule_data.get("failure_severity", "suspicious"),
-                    failure_message=rule_data.get("failure_message", ""),
-                    success_message=rule_data.get("success_message", ""),
+            for rule_data in raw.get("rules", []):
+                rules.append(
+                    DomainRule(
+                        name=rule_data.get("name", "unnamed"),
+                        description=rule_data.get("description", ""),
+                        applicability_patterns=rule_data.get("applicability_patterns", []),
+                        required_patterns=rule_data.get("required_patterns", []),
+                        antipatterns=rule_data.get("antipatterns", []),
+                        failure_severity=rule_data.get("failure_severity", "suspicious"),
+                        failure_message=rule_data.get("failure_message", ""),
+                        success_message=rule_data.get("success_message", ""),
+                    )
                 )
-            )
 
         self._rule_cache[domain] = rules
         return rules

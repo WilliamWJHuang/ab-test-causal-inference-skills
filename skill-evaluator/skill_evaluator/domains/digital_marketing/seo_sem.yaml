@@ -1,0 +1,80 @@
+# Digital Marketing — SEO / SEM Rules
+# Practitioner best-practice rules for search engine optimization and
+# search engine marketing. Severity is "suspicious" (lenient) since
+# best practices vary by context and evolve rapidly.
+
+domain: digital-marketing
+subdomain: seo-sem
+version: "1.0.0"
+description: >
+  Best-practice rules for SEO and SEM (paid search). Checks for technical
+  SEO fundamentals, bidding strategy awareness, keyword research methodology,
+  and content quality signals.
+
+rules:
+  - name: seo-technical-fundamentals
+    description: >
+      SEO skills should cover the technical foundation: crawlability,
+      indexation, and page experience / Core Web Vitals.
+    applicability_patterns:
+      - "SEO|search engine optim|organic.*search|organic.*traffic|search.*rank"
+    required_patterns:
+      - "crawl|index|sitemap|robots|canonical|core web vital|page.*speed|mobile.*friendly|structured.*data|schema|technical.*SEO|LCP|CLS|FID|INP"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses SEO without covering technical fundamentals (crawlability,
+      indexation, Core Web Vitals). Technical SEO is the foundation —
+      without it, content quality is irrelevant.
+    success_message: "Correctly addresses technical SEO fundamentals."
+
+  - name: sem-bidding-strategy
+    description: >
+      Paid search skills should discuss bidding strategy tradeoffs between
+      manual and automated approaches, and between different bidding objectives.
+    applicability_patterns:
+      - "SEM|paid search|PPC|pay per click|google ads|search ads|bid|CPC|cost per click"
+    required_patterns:
+      - "(?:manual|automated|smart).*bid|tROAS|tCPA|target.*(?:ROAS|CPA)|maximize.*(?:conversion|click|value)|bid.*strateg|portfolio.*bid|auction|quality.*score"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses paid search without addressing bidding strategy tradeoffs.
+      The choice between manual CPC, tCPA, and tROAS bidding has major
+      implications for campaign performance and budget efficiency.
+    success_message: "Correctly addresses SEM bidding strategy tradeoffs."
+
+  - name: keyword-research-methodology
+    description: >
+      Keyword strategy should go beyond search volume to address user intent,
+      competitive difficulty, and commercial value.
+    applicability_patterns:
+      - "keyword|search.*term|search.*query|SEO.*strategy|content.*strategy"
+    required_patterns:
+      - "intent|informational|transactional|navigational|commercial|difficult|competi|long.?tail|gap.*analysis|SERP|search.*volume"
+    antipatterns:
+      - "(?:only|just).*(?:pick|choose|target).*highest.*volume"
+    failure_severity: suspicious
+    failure_message: >
+      Discusses keyword strategy by focusing on search volume alone without
+      addressing user intent, keyword difficulty, or competitive positioning.
+      High-volume keywords are often the worst targets for ROI.
+    success_message: "Correctly addresses multi-dimensional keyword research."
+
+  - name: content-quality-signals
+    description: >
+      Content strategy should address E-E-A-T (Experience, Expertise,
+      Authoritativeness, Trustworthiness) and topical authority rather than
+      keyword stuffing.
+    applicability_patterns:
+      - "content.*strategy|content.*marketing|content.*optim|SEO.*content|blog.*strategy"
+    required_patterns:
+      - "E-?E-?A-?T|expertise|authorit|trust|topical|pillar|cluster|user.*experience|helpful.*content|original|depth|value"
+    antipatterns:
+      - "keyword.*(?:stuff|density|spam)|(?:exact|keyword).*(?:density|ratio).*(?:%|percent)"
+    failure_severity: suspicious
+    failure_message: >
+      Discusses content strategy without addressing E-E-A-T signals or
+      topical authority. Modern SEO rewards depth, expertise, and user
+      value — not keyword density.
+    success_message: "Correctly addresses content quality and E-E-A-T signals."

@@ -40,7 +40,7 @@ from skill_evaluator.scorers import CompositeScorer, ReportGenerator
     "forced_domain",
     type=str,
     default=None,
-    help="Force a specific domain for correctness checking (e.g., 'statistics', 'causal-inference').",
+    help="Force a specific domain for correctness checking (e.g., 'statistics', 'causal-inference', 'digital-marketing').",
 )
 @click.option(
     "--weights",
@@ -102,6 +102,7 @@ def main(
         quality_score=quality_result.score,
         domain_score=domain_result.score,
         maintenance_score=maintenance_result.score,
+        security_gate=security_result.risk_level,
     )
 
     # ── Output ────────────────────────────────────────────────────────────

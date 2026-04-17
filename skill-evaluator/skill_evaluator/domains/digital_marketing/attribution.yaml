@@ -1,0 +1,80 @@
+# Digital Marketing — Attribution & Measurement Rules
+# These rules verify that marketing attribution skills provide correct
+# methodological guidance and don't perpetuate common measurement fallacies.
+
+domain: digital-marketing
+subdomain: attribution
+version: "1.0.0"
+description: >
+  Correctness rules for attribution and measurement in digital marketing.
+  Checks for proper model awareness, incrementality testing, view-through
+  caveats, and cross-device measurement limitations.
+
+rules:
+  - name: attribution-model-awareness
+    description: >
+      Skills discussing attribution must acknowledge model assumptions and
+      biases (e.g., last-click overvalues bottom-funnel, first-click
+      overvalues top-funnel). No attribution model is "correct."
+    applicability_patterns:
+      - "attribution|marketing.*channel|conversion.*path|touch.?point"
+    required_patterns:
+      - "last.?click|first.?click|multi.?touch|linear|time.?decay|position.?based|data.?driven|model.*assumption|model.*bias|model.*limitation"
+    antipatterns:
+      - "last.?click is the (?:best|correct|standard|only|recommended) (?:model|method|approach)"
+      - "always use last.?click"
+    failure_severity: incorrect
+    failure_message: >
+      Discusses marketing attribution without acknowledging model assumptions
+      or biases. Last-click attribution systematically undervalues upper-funnel
+      channels (display, social) and overvalues bottom-funnel (branded search).
+    success_message: "Correctly addresses attribution model assumptions and tradeoffs."
+
+  - name: incrementality-testing
+    description: >
+      Attribution discussions should reference incrementality or lift testing
+      as the gold standard for measuring true causal impact of marketing spend.
+    applicability_patterns:
+      - "attribution|marketing.*ROI|ROAS|return on ad spend|marketing.*effectiveness"
+    required_patterns:
+      - "incrementality|incremental.*lift|geo.*experiment|holdout|matched.*market|causal.*impact|lift.*test|randomized.*experiment"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses marketing attribution or ROI without mentioning incrementality
+      testing. Observational attribution models conflate correlation with
+      causation — only incrementality tests establish true causal lift.
+    success_message: "Correctly references incrementality testing for causal measurement."
+
+  - name: view-through-attribution-caveats
+    description: >
+      View-through (impression-based) attribution must note cookieless
+      limitations, attribution inflation, and the difficulty of establishing
+      genuine exposure effects.
+    applicability_patterns:
+      - "view.?through|impression.*attribution|display.*attribution|viewability"
+    required_patterns:
+      - "cookie|inflation|over.?count|genuine.*exposure|incrementality|control.*group|probabilistic"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses view-through attribution without noting its measurement
+      limitations. VTA is highly susceptible to inflation and is increasingly
+      unreliable in cookieless environments.
+    success_message: "Correctly addresses view-through attribution caveats."
+
+  - name: cross-device-tracking-limitations
+    description: >
+      Must acknowledge that users interact across devices, and deterministic
+      cross-device matching is incomplete.
+    applicability_patterns:
+      - "cross.?device|multi.?device|customer.*journey|omni.?channel"
+    required_patterns:
+      - "deterministic|probabilistic|identity.*graph|login.*data|device.*graph|limitation|gap|incomplete"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses cross-device or omnichannel measurement without acknowledging
+      identity resolution limitations. Even the best identity graphs have
+      significant coverage gaps.
+    success_message: "Correctly addresses cross-device tracking limitations."

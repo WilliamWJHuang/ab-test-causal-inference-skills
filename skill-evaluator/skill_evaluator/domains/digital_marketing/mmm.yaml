@@ -1,0 +1,63 @@
+# Digital Marketing — Marketing Mix Modeling (MMM) Rules
+# These rules verify that MMM skills properly address temporal dynamics,
+# saturation, and channel interactions.
+
+domain: digital-marketing
+subdomain: mmm
+version: "1.0.0"
+description: >
+  Correctness rules for Marketing Mix Modeling. Checks for adstock/carryover
+  effects, diminishing returns modeling, and channel interaction awareness.
+
+rules:
+  - name: mmm-adstock-carryover
+    description: >
+      Marketing Mix Models must account for adstock/carryover effects —
+      advertising impact persists beyond the period of spend.
+    applicability_patterns:
+      - "marketing mix model|MMM|media mix model|budget.*allocation|marketing.*model"
+    required_patterns:
+      - "adstock|carryover|decay|lag|half.?life|geometric.*decay|delayed.*effect|temporal|stock.*variable"
+    antipatterns:
+      - "same.?(?:period|week|day).*(?:only|impact)|no.*(?:lag|carryover|delay)"
+    failure_severity: incorrect
+    failure_message: >
+      Discusses Marketing Mix Modeling without addressing adstock/carryover
+      effects. Ignoring the temporal persistence of ad exposure leads to
+      systematically biased ROI estimates ― typically underestimating
+      channels with long carryover (TV, brand) and overestimating short-lived
+      channels (search).
+    success_message: "Correctly requires adstock/carryover modeling in MMM."
+
+  - name: mmm-diminishing-returns
+    description: >
+      Budget optimization must model diminishing returns (saturation curves).
+      Linear spend-response assumptions lead to absurd extrapolations.
+    applicability_patterns:
+      - "marketing mix model|MMM|budget.*alloc|spend.*optim|media.*optim"
+    required_patterns:
+      - "diminish|saturat|hill.*function|log.*transform|concav|marginal.*return|response.*curve|S.?curve"
+    antipatterns:
+      - "linear.*relationship.*between.*spend.*(?:and|&).*(?:revenue|conversion|outcome)"
+    failure_severity: suspicious
+    failure_message: >
+      Discusses MMM or budget optimization without modeling diminishing returns.
+      Assuming linear spend-response relationships leads to "spend everything
+      on the best-performing channel" recommendations, ignoring saturation.
+    success_message: "Correctly models diminishing returns / saturation in MMM."
+
+  - name: mmm-channel-interactions
+    description: >
+      Should acknowledge that marketing channels interact — display may
+      increase branded search, social may amplify email, etc.
+    applicability_patterns:
+      - "marketing mix model|MMM|media mix model|channel.*alloc|multi.?channel"
+    required_patterns:
+      - "interaction|synerg|cross.?channel|complementar|halo.*effect|interplay|joint.*effect|mediation"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses MMM without acknowledging channel interaction effects.
+      Treating channels as independent ignores synergies (e.g., display
+      driving branded search) and leads to suboptimal budget allocation.
+    success_message: "Correctly addresses channel interaction effects in MMM."
