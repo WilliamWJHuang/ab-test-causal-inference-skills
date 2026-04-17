@@ -292,15 +292,22 @@ class MaintenanceAnalyzer:
             )
 
     def _compute_score(self, result: MaintenanceResult) -> float:
-        """Compute a 0-100 maintenance score."""
-        score = 50.0
+        """Compute a 0-100 maintenance score.
 
-        for finding in result.findings:
-            if finding.severity == "strength":
-                score += 10.0
-            elif finding.severity == "warning":
-                score -= 10.0
-            elif finding.severity == "info":
-                score += 1.0
+        Normalized by number of applicable checks. Strengths count as a full
+        pass, info as partial (0.4), and warnings as a fail (0).
+        """
+        if not result.findings:
+            return 50.0  # No checks fired — neutral
 
+        applicable = len(result.findings)
+        passes = sum(
+            1.0 for f in result.findings if f.severity == "strength"
+        )
+        partial = sum(
+            0.4 for f in result.findings if f.severity == "info"
+        )
+        # warnings contribute 0
+
+        score = ((passes + partial) / applicable) * 100
         return max(0.0, min(100.0, score))

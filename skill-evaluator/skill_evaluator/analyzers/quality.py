@@ -352,15 +352,24 @@ class QualityAnalyzer:
             )
 
     def _compute_score(self, result: QualityResult) -> float:
-        """Compute a 0-100 quality score."""
-        score = 50.0  # Start at neutral
+        """Compute a 0-100 quality score.
 
-        for finding in result.findings:
-            if finding.severity == "strength":
-                score += 10.0
-            elif finding.severity == "warning":
-                score -= 10.0
-            elif finding.severity == "suggestion":
-                score -= 3.0
+        Normalized by number of applicable checks rather than raw pattern
+        counts. Each check that produced a finding is one applicable item.
+        Strengths count as a full pass, suggestions as partial (0.4), and
+        warnings as a fail (0).
+        """
+        if not result.findings:
+            return 50.0  # No checks fired — neutral
 
+        applicable = len(result.findings)
+        passes = sum(
+            1.0 for f in result.findings if f.severity == "strength"
+        )
+        partial = sum(
+            0.4 for f in result.findings if f.severity == "suggestion"
+        )
+        # warnings contribute 0
+
+        score = ((passes + partial) / applicable) * 100
         return max(0.0, min(100.0, score))

@@ -74,8 +74,16 @@ class CompositeScorer:
         quality_score: float = 50.0,
         domain_score: float = 50.0,
         maintenance_score: float = 50.0,
+        security_gate: str = "safe",
     ) -> CompositeResult:
-        """Compute the composite score from individual dimension scores."""
+        """Compute the composite score from individual dimension scores.
+
+        Args:
+            security_gate: Risk level from SecurityAnalyzer. If 'critical' or
+                'high', the overall score is hard-capped regardless of other
+                dimensions. This prevents good scores elsewhere from masking
+                real security risks.
+        """
         result = CompositeResult()
 
         # Build dimension scores
@@ -112,8 +120,19 @@ class CompositeScorer:
         else:
             result.overall_score = 0.0
 
+        # Security gate: hard-cap overall score for critical/high risks.
+        # A skill can be beautifully written and domain-correct, but if it
+        # contains prompt injection or credential harvesting, none of that
+        # matters.
+        if security_gate == "critical":
+            result.overall_score = min(result.overall_score, 20.0)
+        elif security_gate == "high":
+            result.overall_score = min(result.overall_score, 45.0)
+
         result.overall_grade = self._score_to_grade(result.overall_score)
-        result.recommendation = self._generate_recommendation(result)
+        result.recommendation = self._generate_recommendation(
+            result, security_gate=security_gate
+        )
 
         return result
 
@@ -124,8 +143,22 @@ class CompositeScorer:
                 return grade
         return "F"
 
-    def _generate_recommendation(self, result: CompositeResult) -> str:
+    def _generate_recommendation(
+        self, result: CompositeResult, security_gate: str = "safe"
+    ) -> str:
         """Generate an actionable recommendation based on the composite result."""
+        # Security gate overrides everything
+        if security_gate == "critical":
+            return (
+                "🚫 BLOCKED — critical security risk detected (prompt injection, "
+                "credential harvesting, or destructive commands). Do not install."
+            )
+        if security_gate == "high":
+            return (
+                "⚠️ HIGH RISK — security concerns detected. Review all security "
+                "findings before installing. Score capped until resolved."
+            )
+
         score = result.overall_score
 
         # Find the weakest dimension

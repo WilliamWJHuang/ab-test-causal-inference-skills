@@ -312,15 +312,37 @@ class StructuralAnalyzer:
                 )
 
     def _compute_score(self, result: StructuralResult) -> float:
-        """Compute a 0-100 structural score."""
-        score = 100.0
+        """Compute a 0-100 structural score.
 
+        Uses per-finding penalties rather than flat per-severity deductions.
+        Missing SKILL.md is catastrophic; missing a recommended section is minor.
+        """
+        # Per-code penalties: higher = more important
+        code_penalties = {
+            # Errors — catastrophic to moderate
+            "S001": 40,  # No SKILL.md found
+            "S010": 30,  # Missing frontmatter entirely
+            "S011": 25,  # Invalid YAML
+            "S012": 25,  # Frontmatter not a mapping
+            "S020": 15,  # Missing required field (name/description)
+            "S021": 12,  # Required field is empty
+            # Warnings — moderate to minor
+            "S030": 3,   # Missing recommended field
+            "S031": 3,   # Short description
+            "S032": 5,   # No activation triggers
+            "S041": 5,   # Very few headings
+            "S050": 8,   # Very short body (<100 words)
+            # Info — minor
+            "S040": 1,   # Missing recommended section
+            "S051": 3,   # Somewhat short body
+            "S052": 2,   # No code blocks
+            "S060": 2,   # No references/ directory
+            "S061": 1,   # Empty references/ directory
+        }
+
+        score = 100.0
         for finding in result.findings:
-            if finding.severity == "error":
-                score -= 20.0
-            elif finding.severity == "warning":
-                score -= 5.0
-            elif finding.severity == "info":
-                score -= 1.0
+            penalty = code_penalties.get(finding.code, 5.0)
+            score -= penalty
 
         return max(0.0, min(100.0, score))
