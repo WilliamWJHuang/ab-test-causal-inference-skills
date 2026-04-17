@@ -2,9 +2,9 @@
 
 Agent skills for experiment design, causal inference, and statistical review. Built for [Claude Code](https://claude.ai/code), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Cursor](https://cursor.sh), and anything else that reads `SKILL.md` files.
 
-## Why I built this
+## What this is for
 
-I've spent years doing experimentation and causal inference work. When I started using AI coding agents for data science, I noticed they make the same mistakes over and over:
+AI agents don't know statistics. They'll run an underpowered experiment, claim causation from a correlation, and report single-seed results as definitive. Common mistakes they make without guardrails:
 
 - Run a t-test on skewed data without checking assumptions
 - No power analysis — just "run it and see"
@@ -12,9 +12,18 @@ I've spent years doing experimentation and causal inference work. When I started
 - Causal claims from an OLS on observational data
 - Single-seed model comparisons reported as definitive
 
-None of this would survive a review from anyone who's done this work seriously. But agents don't know that, and most of the people using them for data science don't either.
+This is an agent skill that makes them stop doing that. It enforces power analysis, requires identification strategies for causal claims, and refuses to approve methodology that wouldn't survive peer review.
 
-There are 1000+ agent skills out there for React, DevOps, cloud APIs, marketing — nothing for statistics or causal inference. So I built these.
+There are 1000+ agent skills for React and DevOps. This is the first one for experiment design and causal inference.
+
+## Who this is for
+
+- **Data scientists** who run A/B tests and want their agent to enforce statistical rigor automatically
+- **Product managers and analysts** who work with experiments but aren't trained statisticians — the skill explains concepts at your level
+- **Causal inference practitioners** who use DiD, RDD, IV, or matching and want their agent to follow the identify → estimate → refute pipeline
+- **ML engineers** who need to catch seed cherry-picking, test-set contamination, and single-run reporting
+- **Students and researchers** learning experimentation or causal methods — the skill acts as a knowledgeable collaborator that explains its reasoning
+- **Anyone using AI agents for data science** who wants the agent to follow the same standards a careful statistician would
 
 ## Quick start
 
@@ -301,7 +310,7 @@ The repo includes [skill-evaluator](skill-evaluator/), a CLI that scores any SKI
 
 ## Background
 
-I work on experimentation and causal inference. The ML-specific checks (seed instability, test-set contamination) draw from established best practices in deep learning evaluation reproducibility.
+This project comes from hands-on experimentation and causal inference work. The ML-specific checks (seed instability, test-set contamination) draw from established best practices in deep learning evaluation reproducibility.
 
 ## Contributing
 
