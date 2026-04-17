@@ -1,33 +1,27 @@
-# Causal Data Science Skills
+# A/B Test & Causal Inference Agent Skills
 
-Agent skills for experiment design, causal inference, and statistical review. Built for [Claude Code](https://claude.ai/code), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Cursor](https://cursor.sh), and anything else that reads `SKILL.md` files.
+Agent skills for A/B testing, causal inference, and stats review — works with [Claude Code](https://claude.ai/code), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Cursor](https://cursor.sh), or any agent that reads `SKILL.md` files.
 
 ## What this is for
 
-AI agents don't know statistics. They'll run an underpowered experiment, claim causation from a correlation, and report single-seed results as definitive. Common mistakes they make without guardrails:
+AI agents are pretty good at writing code. They're not good at statistics. Without guardrails, they'll do things like:
 
-- Run a t-test on skewed data without checking assumptions
-- No power analysis — just "run it and see"
-- Twelve metrics tested, one hits p < 0.05, and suddenly that's the "primary" metric
-- Causal claims from an OLS on observational data
-- Single-seed model comparisons reported as definitive
+- Skip power analysis entirely ("just run the test and see")
+- Test a dozen metrics, find one with p < 0.05, and call that the primary result
+- Make causal claims from a basic regression on observational data
+- Report model accuracy from a single random seed as if it's reliable
 
-This is an agent skill that makes them stop doing that. It enforces power analysis, requires identification strategies for causal claims, and refuses to approve methodology that wouldn't survive peer review.
+These are the kind of mistakes that get caught in peer review or by a careful statistician — but agents don't have that filter built in.
 
-There are 1000+ agent skills for React and DevOps. This is the first one for experiment design and causal inference.
+This skill gives them one. It enforces power analysis, forces assumption checks before estimation, requires identification for causal claims, and flags common statistical pitfalls. There are over 1000 agent skills for things like React, DevOps, and cloud APIs. As far as I know, this is the first one focused on experimentation and causal inference.
 
 ## Who this is for
 
-- **Data scientists** who run A/B tests and want their agent to enforce statistical rigor automatically
-- **Product managers and analysts** who work with experiments but aren't trained statisticians — the skill explains concepts at your level
-- **Causal inference practitioners** who use DiD, RDD, IV, or matching and want their agent to follow the identify → estimate → refute pipeline
-- **ML engineers** who need to catch seed cherry-picking, test-set contamination, and single-run reporting
-- **Students and researchers** learning experimentation or causal methods — the skill acts as a knowledgeable collaborator that explains its reasoning
-- **Anyone using AI agents for data science** who wants the agent to follow the same standards a careful statistician would
+**Data scientists** running A/B tests who want the agent to enforce rigor without being told to. **Product managers and analysts** who work with experiments but don't have a stats background — the skill adjusts its explanations to your level. **Causal inference folks** using DiD, RDD, IV, matching, etc. who want the agent to follow a proper identify → estimate → refute pipeline. **ML engineers** who need to catch things like seed cherry-picking and test set contamination. **Students and researchers** who are still learning — the skill explains its reasoning as it goes. Or really anyone using an agent for data work who'd rather it act like a careful statistician than a code autocomplete.
 
 ## Quick start
 
-Copy one folder. That's it.
+Copy one folder into your agent's skills directory:
 
 ```bash
 # Claude Code
@@ -40,18 +34,18 @@ cp -r skills/causal-data-science/ .gemini/skills/causal-data-science/
 cp -r skills/causal-data-science/ .cursor/skills/causal-data-science/
 ```
 
-One skill, one install. No configuration. The agent detects what you need from your question and adapts to your experience level automatically.
+That's it. No config needed. Ask it something like "help me design an A/B test" or "does X cause Y in my data" and it takes over from there.
 
 ## Examples
 
 ### "I want to test if a new checkout flow increases purchases"
 
 <details>
-<summary>Full conversation →</summary>
+<summary>See the conversation →</summary>
 
 **You:** I want to test if a new checkout flow increases purchases. How should I set this up?
 
-**Agent:** Let's design this experiment properly. A few questions first:
+**Agent:** Let's design this properly. A few questions first:
 
 1. **What's changing?** The checkout flow (got it).
 2. **Who gets randomized?** Individual users, or does this affect entire sessions/devices?
@@ -89,7 +83,7 @@ I'll generate a pre-analysis plan with all of this documented so nobody changes 
 ### "Does our pricing change affect revenue?" (observational data)
 
 <details>
-<summary>Full conversation →</summary>
+<summary>See the conversation →</summary>
 
 **You:** We changed pricing in Germany last quarter. I want to know if it affected revenue.
 
@@ -120,7 +114,7 @@ Want me to write the code?
 ### "My model gets 94% accuracy, is that good?"
 
 <details>
-<summary>Full conversation →</summary>
+<summary>See the conversation →</summary>
 
 **You:** I trained a classifier and it gets 94% accuracy. Is that good?
 
@@ -150,10 +144,10 @@ A few more things I'd want to check:
 
 </details>
 
-### "I have data and want to know if X causes Y" (beginner, never done causal inference)
+### "I have data and want to know if X causes Y" (beginner)
 
 <details>
-<summary>Full conversation →</summary>
+<summary>See the conversation →</summary>
 
 **You:** I have a dataset of customers and I want to know if signing up for our loyalty program causes them to spend more.
 
@@ -187,10 +181,10 @@ Want me to walk through Step 2 with your data?
 
 </details>
 
-### "Review this analysis for me" (advanced user)
+### "Review this analysis for me" (advanced)
 
 <details>
-<summary>Full conversation →</summary>
+<summary>See the conversation →</summary>
 
 **You:** Can you review this analysis? I ran a DiD comparing states that adopted a policy to those that didn't. I have a staggered rollout — 12 states adopted between 2018-2021, 38 didn't. Standard TWFE with state and year fixed effects. The coefficient on treatment is 3.2pp (p=0.02).
 
@@ -210,82 +204,53 @@ Want me to write the Callaway-Sant'Anna code, or should we start with the event 
 
 </details>
 
-## What it covers
+## What's inside
 
-The skill handles six workflows through a single entry point:
+Six workflows, one entry point:
 
-**Experiment design** — Clarify the question, run power analysis, choose randomization strategy (simple, stratified, paired, cluster, geo, switchback), set up CUPED variance reduction, generate a pre-analysis plan. Refuses power below 80%.
+**Experiment design** — power analysis, randomization strategy (simple, stratified, cluster, geo, switchback), CUPED variance reduction, pre-analysis plan generation. Won't let you run an experiment with power below 80%.
 
-**Causal inference** — Decision tree for observational data: DiD, synthetic control, RDD, IV, matching/IPW, doubly robust. Forces assumption checks and mandatory refutation tests.
+**Causal inference** — for when you can't randomize. Routes to DiD, synthetic control, RDD, IV, matching/IPW, or doubly robust based on your data. Checks assumptions first, runs refutation tests after.
 
-**Post-experiment analysis** — SRM check, covariate adjustment (Lin estimator), non-compliance (ITT vs. LATE), small-sample inference (permutation tests). The gap most skills miss.
+**Post-experiment analysis** — SRM checks, covariate adjustment via Lin estimator, non-compliance handling (ITT vs. LATE), small-sample inference with permutation tests.
 
-**Statistical review** — Two-pass audit: right method for the question, then correct execution. Catches multiple comparisons, missing effect sizes, causal language from correlations, seed cherry-picking.
+**Stats review** — two-pass audit (right method? done correctly?). Catches things like multiple comparisons without correction, causal language from observational data, seed cherry-picking.
 
-**Data quality audit** — Selection bias, survivorship bias, missing data mechanisms, data leakage, outliers, sample representativeness.
+**Data quality** — selection bias, survivorship bias, missing data patterns, data leakage, outlier assessment.
 
-**Metric definition** — Primary/secondary/guardrail metrics with exact formulas. Catches Goodhart's Law, vanity metrics, composite metrics.
+**Metrics** — helps define primary/secondary/guardrail metrics with exact formulas. Flags Goodhart's Law, vanity metrics, and poorly specified composites.
 
 ## Adapts to your level
 
-The skill detects your statistics background from how you talk — not by asking. Four levels:
+The skill picks up on how you talk and adjusts accordingly. It doesn't ask "what's your experience level?" — just listens.
 
-- **Beginner:** "Is this better?" → Analogies, step-by-step, explains every term
-- **Intermediate:** "What's the right sample size?" → Standard terms, skips basics
-- **Advanced:** "Should I use AIPW here?" → Abbreviations, straight to code
-- **Expert:** "I'm concerned about negative weighting in TWFE" → Peer discussion, cites papers
+If you say "is this better?" it'll walk you through the basics with analogies. If you say "should I use AIPW here?" it'll skip the intro and get into implementation. Four levels, adjusts mid-conversation, never locks in.
 
-## What's under the hood
+## Under the hood
 
 ```
 skills/causal-data-science/
-├── SKILL.md                            ← the one file the agent reads
+├── SKILL.md                            ← the one file the agent loads
 ├── references/
-│   ├── experiment-design/
-│   │   ├── power-analysis.md           # formulas, code, cluster designs
-│   │   ├── sequential-testing.md       # group sequential, always-valid
-│   │   ├── variance-reduction.md       # CUPED, CUPAC, stratification
-│   │   ├── rct-analysis.md             # Neyman, Lin estimator, ITT/LATE
-│   │   ├── small-sample-inference.md   # permutation tests, exact tests
-│   │   └── pre-registration.md
-│   ├── causal-inference/
-│   │   ├── did-guide.md                # includes staggered DiD
-│   │   ├── synthetic-control.md
-│   │   ├── rdd-guide.md
-│   │   ├── iv-late.md
-│   │   ├── matching-weighting.md       # PSM, CEM, IPW, AIPW
-│   │   ├── hte-estimation.md           # meta-learners, causal forest
-│   │   ├── interference-networks.md    # SUTVA violations, spillover
-│   │   └── sensitivity-analysis.md     # E-values, Rosenbaum, Oster
-│   ├── stats-review/
-│   │   ├── methodology-checklist.md
-│   │   ├── execution-checklist.md
-│   │   ├── ml-specific-checks.md       # seed sensitivity, leakage
-│   │   ├── multiple-comparisons.md
-│   │   └── effect-size-guide.md
-│   ├── data-quality/
-│   │   ├── bias-checklist.md
-│   │   ├── missing-data.md
-│   │   └── leakage-detection.md
-│   ├── metrics/
-│   │   ├── metric-taxonomy.md
-│   │   ├── anti-patterns.md
-│   │   └── sensitivity-analysis.md
-│   └── adaptive-explainer/
-│       └── jargon-glossary.md          # 33 technical-to-plain translations
+│   ├── experiment-design/              # power analysis, sequential testing, CUPED, etc.
+│   ├── causal-inference/               # DiD, RDD, IV, matching, sensitivity analysis
+│   ├── stats-review/                   # methodology and execution checklists
+│   ├── data-quality/                   # bias, missing data, leakage detection
+│   ├── metrics/                        # taxonomy, anti-patterns
+│   └── adaptive-explainer/             # jargon glossary (33 terms)
 ├── scripts/
-│   ├── power_calculator.py             # standalone CLI tool
-│   └── refutation_tests.py             # placebo, bootstrap, subset
+│   ├── power_calculator.py             # works standalone
+│   └── refutation_tests.py
 └── assets/
     ├── pre-analysis-plan-template.md
     └── review-report-template.md
 ```
 
-The main SKILL.md is ~170 lines. Reference docs load on demand — the agent only reads what it needs.
+~170 lines in the main SKILL.md. Reference docs load only when needed.
 
-## Individual skills (advanced)
+## Individual skills
 
-If you only want one specific domain, each workflow is also available as a standalone skill:
+If you just want one piece (say, only experiment design), each workflow also exists as a standalone skill:
 
 - [`experiment-designer/`](skills/experiment-designer/)
 - [`causal-inference-advisor/`](skills/causal-inference-advisor/)
@@ -294,27 +259,21 @@ If you only want one specific domain, each workflow is also available as a stand
 - [`metrics-definer/`](skills/metrics-definer/)
 - [`adaptive-explainer/`](skills/adaptive-explainer/)
 
-For most users, just install `causal-data-science/`.
+Most people should just install `causal-data-science/` and get everything.
 
 ## Skill evaluator
 
-The repo includes [skill-evaluator](skill-evaluator/), a CLI that scores any SKILL.md on structure, security, quality, domain correctness, and maintenance. Like a linter for agent skills. See the [skill-evaluator README](skill-evaluator/README.md).
+The repo also has a [skill-evaluator](skill-evaluator/) CLI that scores any SKILL.md on structure, security, quality, and domain correctness. Basically a linter for agent skills. More details in the [skill-evaluator README](skill-evaluator/README.md).
 
-## Design choices
+## Design philosophy
 
-**The agent will refuse.** Underpowered experiment? No. Causal claims without identification? No. Single-seed ML comparison? No. There's an escape hatch if you explicitly acknowledge the override, but the default is rigor.
+The agent will say no. If you try to run an underpowered experiment, skip refutation tests, or claim causation without a proper identification strategy, it refuses. You can override it if you know what you're doing, but you have to acknowledge it explicitly.
 
-**Adapts, doesn't ask.** Never asks "what's your experience level?" — infers it from your language and adjusts in real time.
-
-**One install, not seven.** Single SKILL.md with on-demand reference loading. Minimal context window footprint.
-
-## Background
-
-This project comes from hands-on experimentation and causal inference work. The ML-specific checks (seed instability, test-set contamination) draw from established best practices in deep learning evaluation reproducibility.
+It figures out your level from context instead of asking. And it's one install instead of seven separate skills — the routing happens inside the SKILL.md automatically.
 
 ## Contributing
 
-[CONTRIBUTING.md](CONTRIBUTING.md) has the details. Most useful contributions: reference docs for methods not covered yet, and reports when the guidance is wrong (with a citation).
+[CONTRIBUTING.md](CONTRIBUTING.md) has the full details. The most useful contributions are reference docs for methods I haven't covered yet, and corrections when the existing guidance is wrong (ideally with a citation).
 
 ## License
 
