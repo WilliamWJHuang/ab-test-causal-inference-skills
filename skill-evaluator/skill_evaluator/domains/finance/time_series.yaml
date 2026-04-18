@@ -28,7 +28,7 @@ rules:
       Models trained on bull market data will fail in bear markets. Structural
       breaks, volatility clustering, and regime-switching should be considered.
     applicability_patterns:
-      - "(?i)forecast|predictive.model|trading.signal|market.prediction|return.prediction|alpha.model"
+      - "(?i)(financial|market|return|price|stock|equity|bond|asset).*(forecast|predict)|trading.signal|alpha.model|return.prediction"
     required_patterns:
       - "(?i)regime|structural.break|market.condition|volatility.cluster|non.stationar|GARCH|changing.dynamics|bull.bear"
     antipatterns:

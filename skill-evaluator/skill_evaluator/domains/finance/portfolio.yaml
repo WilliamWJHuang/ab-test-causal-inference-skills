@@ -4,9 +4,12 @@ version: "1.0.0"
 rules:
   - name: mpt-limitations
     description: >
-      Modern Portfolio Theory (MPT) guidance must acknowledge its assumptions
-      and limitations: stable correlations, normally distributed returns,
-      and sensitivity to estimation error in expected returns and covariance.
+      Modern Portfolio Theory (MPT) guidance must acknowledge its practical
+      limitations. MPT assumes investors optimize over mean and variance,
+      which may not capture higher moments (skewness, kurtosis) that matter
+      to real investors. More critically, practical implementation is highly
+      sensitive to estimation error in expected returns and the covariance
+      matrix — small input changes produce dramatically different allocations.
     applicability_patterns:
       - "(?i)portfolio.optimization|mean.variance|efficient.frontier|modern.portfolio|markowitz|asset.allocation"
     required_patterns:
@@ -17,7 +20,8 @@ rules:
     failure_message: >
       Portfolio optimization guidance presents MPT without acknowledging
       estimation error sensitivity. Mean-variance optimizers are notoriously
-      sensitive to small changes in expected returns.
+      sensitive to small changes in expected returns — this is an
+      implementation fragility, not a theoretical flaw.
     success_message: >
       Correctly acknowledges MPT limitations and estimation error issues.
 
@@ -58,3 +62,24 @@ rules:
     success_message: >
       Discusses diversification with appropriate depth including correlations
       and factor exposures.
+
+  - name: rebalancing-methodology
+    description: >
+      Portfolio management skills must address rebalancing methodology.
+      The choice between calendar-based vs. threshold-based rebalancing,
+      rebalancing frequency, and the drift-vs-transaction-cost tradeoff
+      materially affects performance and risk.
+    applicability_patterns:
+      - "(?i)portfolio.management|rebalanc|asset.allocation|portfolio.construction|drift"
+    required_patterns:
+      - "(?i)rebalanc|drift|threshold|calendar|frequency|transaction.cost|tax.aware|bands|tolerance"
+    antipatterns:
+      - "(?i)never.rebalance|rebalancing.doesn.t.matter|set.and.forget.forever"
+    failure_severity: suspicious
+    failure_message: >
+      Portfolio management guidance does not address rebalancing methodology.
+      Without rebalancing, portfolios drift from target allocations, altering
+      the risk profile. The rebalancing frequency and method involve real
+      tradeoffs between drift risk and transaction/tax costs.
+    success_message: >
+      Discusses rebalancing methodology and the drift-vs-cost tradeoff.

@@ -17,8 +17,9 @@ rules:
     failure_severity: incorrect
     failure_message: >
       DCF guidance does not discuss sensitivity analysis. Terminal value
-      typically represents 60-80% of total DCF value — small changes in
-      terminal growth rate or WACC radically change the output.
+      can represent a very large proportion of total DCF value (50-80%+
+      for growth companies), making the result extremely sensitive to
+      terminal growth rate and WACC assumptions.
     success_message: >
       Correctly emphasizes sensitivity analysis and assumption uncertainty in DCF.
 

@@ -66,7 +66,7 @@ rules:
       must acknowledge market efficiency considerations. What edge does
       the strategy exploit, and why hasn't it been arbitraged away?
     applicability_patterns:
-      - "(?i)alpha|outperform|beat.the.market|mispricing|anomaly|excess.return|market.inefficien"
+      - "(?i)generate.*alpha|alpha.*generation|positive.*alpha|excess.*alpha|outperform|beat.the.market|mispricing|anomaly|excess.return|market.inefficien"
     required_patterns:
       - "(?i)market.efficien|EMH|informational.edge|transaction.cost|capacity|arbitrage|competi|edge.decay|crowded"
     antipatterns:

@@ -42,9 +42,11 @@ rules:
 
   - name: risk-return-metrics
     description: >
-      Skills discussing risk-adjusted returns should go beyond the Sharpe ratio.
-      The Sharpe ratio penalizes upside volatility equally with downside,
-      assumes symmetric returns, and is misleading for non-normal distributions.
+      Skills discussing risk-adjusted returns should mention at least one
+      alternative to the Sharpe ratio when appropriate. The Sharpe ratio
+      penalizes upside and downside volatility equally, which may not
+      reflect investor preferences for strategies with skewed or non-normal
+      return distributions.
     applicability_patterns:
       - "(?i)risk.adjusted|sharpe.ratio|performance.measure|risk.return"
     required_patterns:
@@ -54,6 +56,8 @@ rules:
     failure_severity: suspicious
     failure_message: >
       Risk-adjusted return guidance relies solely on the Sharpe ratio without
-      discussing alternatives that account for asymmetric or non-normal returns.
+      mentioning alternatives. While Sharpe is the industry standard (GIPS,
+      CFA curriculum), strategies with asymmetric payoffs benefit from
+      complementary metrics like Sortino or maximum drawdown.
     success_message: >
       Discusses multiple risk-adjusted return metrics beyond the Sharpe ratio.

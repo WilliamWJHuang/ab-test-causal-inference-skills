@@ -33,7 +33,9 @@ rules:
   - name: incrementality-testing
     description: >
       Attribution discussions should reference incrementality or lift testing
-      as the gold standard for measuring true causal impact of marketing spend.
+      as the strongest causal evidence for marketing impact. Incrementality
+      tests are used to calibrate other attribution approaches (MMM, MTA)
+      rather than replace them, since they are expensive and infrequent.
     applicability_patterns:
       - "attribution|marketing.*ROI|ROAS|return on ad spend|marketing.*effectiveness"
     required_patterns:
@@ -43,7 +45,8 @@ rules:
     failure_message: >
       Discusses marketing attribution or ROI without mentioning incrementality
       testing. Observational attribution models conflate correlation with
-      causation — only incrementality tests establish true causal lift.
+      causation — incrementality tests provide the strongest causal evidence
+      and are used to calibrate MMM and MTA models.
     success_message: "Correctly references incrementality testing for causal measurement."
 
   - name: view-through-attribution-caveats

@@ -54,6 +54,7 @@ rules:
     failure_severity: suspicious
     failure_message: >
       Discusses ad impressions without addressing viewability standards or
-      ad fraud. Not all served impressions are viewable, and ad fraud can
-      consume 5-20% of programmatic budgets.
+      ad fraud. Not all served impressions are viewable, and ad fraud /
+      invalid traffic represent a meaningful portion of programmatic spend,
+      varying significantly by inventory quality and geography.
     success_message: "Correctly addresses viewability and ad fraud prevention."

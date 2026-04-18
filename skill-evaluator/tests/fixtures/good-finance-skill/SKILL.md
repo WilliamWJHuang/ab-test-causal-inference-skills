@@ -34,6 +34,14 @@ When asked to construct an optimal portfolio:
    concentration, and tail dependence. In crises, correlations spike —
    assets that look diversified in normal times may all fall together.
 
+## Rebalancing
+
+Portfolio rebalancing requires balancing drift risk against transaction costs:
+- **Calendar-based**: rebalance monthly/quarterly regardless of drift
+- **Threshold-based**: rebalance when allocation drifts beyond tolerance bands
+- Tax-aware rebalancing: harvest losses when rebalancing, avoid wash sales
+- Higher frequency reduces drift risk but increases transaction/tax costs
+
 ## Benchmark Selection
 
 Always match the benchmark to the strategy:
@@ -88,7 +96,7 @@ The Sharpe ratio is a starting point but not sufficient:
 Never use information that wouldn't have been available at the time of the
 simulated decision. This includes:
 - Point-in-time fundamentals (use lagged data, not restated)
-- Index reconstitution (don't use today's S&P 500 members for 2010 tests)
+- Index reconstitution (use point-in-time index membership, not current constituents)
 - Event timing (earnings dates, splits are known in advance in databases)
 
 ### Survivorship Bias
@@ -111,6 +119,13 @@ Net-of-cost returns are the only returns that matter.
 - Run out-of-sample tests on genuinely held-out data
 - Be suspicious of strategies with too-good-to-be-true Sharpe ratios (> 2.0)
 - Combinatorial purged cross-validation (CPCV) for financial data
+
+### Multiple Testing Bias
+When evaluating many strategies or parameter combinations:
+- The best-performing backtest is likely inflated by selection bias
+- Use the deflated Sharpe ratio (López de Prado) to correct for data mining
+- Apply family-wise error rate corrections (Bonferroni, Holm)
+- Report false discovery rate (FDR) when screening many signals
 
 ---
 

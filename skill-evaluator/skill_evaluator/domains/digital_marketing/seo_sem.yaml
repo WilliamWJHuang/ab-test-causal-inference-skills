@@ -78,3 +78,21 @@ rules:
       topical authority. Modern SEO rewards depth, expertise, and user
       value — not keyword density.
     success_message: "Correctly addresses content quality and E-E-A-T signals."
+
+  - name: ai-search-readiness
+    description: >
+      SEO skills should address the impact of AI-generated search results
+      (Google AI Overviews, Bing Copilot, SGE) on organic traffic and
+      SEO strategy. This is the most significant disruption to search
+      since mobile-first indexing.
+    applicability_patterns:
+      - "SEO|search engine optim|organic.*search|organic.*traffic|search.*rank|SERP"
+    required_patterns:
+      - "AI.*overview|SGE|zero.?click|generative.*search|AI.*search|cited|structured.*data|featured.*snippet|position.*zero"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses SEO without addressing the impact of AI-generated search
+      results (AI Overviews). Zero-click searches and AI-generated answers
+      are fundamentally changing organic CTR and SEO strategy.
+    success_message: "Correctly addresses AI search impact on SEO strategy."

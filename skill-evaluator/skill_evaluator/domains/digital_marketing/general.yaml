@@ -14,7 +14,9 @@ rules:
     description: >
       Digital marketing skills should reference the customer journey and funnel
       stages — marketing tactics and metrics differ dramatically between
-      awareness, consideration, conversion, and retention stages.
+      awareness, consideration, conversion, and retention stages. While
+      acknowledging that modern customer journeys are often non-linear and
+      multi-platform, funnel thinking remains a useful framework.
     applicability_patterns:
       - "digital.*marketing|marketing.*strategy|campaign.*strategy|marketing.*plan|customer.*acquisition"
     required_patterns:
@@ -24,7 +26,7 @@ rules:
     failure_message: >
       Discusses digital marketing strategy without referencing the customer
       journey or funnel stages. Marketing tactics, KPIs, and attribution
-      logic all depend on where the customer is in the funnel.
+      logic all depend on where the customer is in the journey.
     success_message: "Correctly references customer journey / funnel stages."
 
   - name: privacy-compliance-awareness
@@ -34,7 +36,7 @@ rules:
     applicability_patterns:
       - "digital.*marketing|tracking|target|audience|data.*collect|marketing.*data|retarget|cookie"
     required_patterns:
-      - "GDPR|CCPA|CPRA|privacy|consent|cookie|third.?party|first.?party|opt.?in|opt.?out|data.*protection|iOS.*14|ATT|App.*Tracking|cookieless|privacy.*sandbox"
+      - "GDPR|CCPA|CPRA|VCDPA|privacy|consent|cookie|third.?party|first.?party|opt.?in|opt.?out|data.*protection|ATT|App.*Tracking|cookieless|privacy.*sandbox|Topics.*API|CMP|consent.*management"
     antipatterns:
       - "ignore.*(?:privacy|consent|regulation|GDPR)"
     failure_severity: suspicious

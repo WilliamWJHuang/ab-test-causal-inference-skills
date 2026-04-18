@@ -27,23 +27,40 @@ rules:
       and DMARC authentication are table stakes.
     success_message: "Correctly addresses email deliverability fundamentals."
 
-  - name: list-hygiene-and-consent
+  - name: list-hygiene
     description: >
-      Email skills must mention list hygiene (removing bounces, inactive
-      subscribers) and proper consent management (opt-in, opt-out, CAN-SPAM,
-      GDPR).
+      Email skills must mention list hygiene practices — removing hard bounces,
+      suppressing inactive subscribers, and maintaining sender reputation
+      through clean lists.
+    applicability_patterns:
+      - "email.*list|subscriber|email.*campaign|email.*market"
+    required_patterns:
+      - "hygiene|clean|inactive|bounce.*removal|suppression|re.?engag|sunset|list.*health|sender.*reputation"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses email lists without addressing list hygiene. Sending to
+      unengaged subscribers damages sender reputation and reduces inbox
+      placement rates for your entire sending domain.
+    success_message: "Correctly addresses email list hygiene practices."
+
+  - name: consent-compliance
+    description: >
+      Email marketing must address consent management and anti-spam
+      compliance. Purchasing email lists violates CAN-SPAM (US), GDPR (EU),
+      and CASL (Canada) — this is a legal requirement, not a best practice.
     applicability_patterns:
       - "email.*list|subscriber|opt.?in|email.*campaign|email.*market"
     required_patterns:
-      - "hygiene|clean|inactive|bounce.*removal|opt.?in|opt.?out|consent|unsubscribe|CAN-SPAM|GDPR|double.*opt|permission|suppression"
+      - "opt.?in|opt.?out|consent|unsubscribe|CAN-SPAM|GDPR|CASL|double.*opt|permission|privacy"
     antipatterns:
-      - "buy.*(?:list|email)|purchased.*(?:list|email)|never.*(?:remove|clean|unsubscribe)"
-    failure_severity: suspicious
+      - "buy.*(?:list|email)|purchased.*(?:list|email)|rent.*(?:list|email)|never.*(?:remove|unsubscribe)"
+    failure_severity: incorrect
     failure_message: >
-      Discusses email lists without addressing list hygiene or consent
-      management. Sending to unengaged subscribers damages sender reputation,
-      and violating consent regulations carries legal risk.
-    success_message: "Correctly addresses list hygiene and consent management."
+      Discusses email marketing without addressing consent compliance.
+      Purchasing or renting email lists violates CAN-SPAM, GDPR, and CASL.
+      All email contacts must provide explicit opt-in consent.
+    success_message: "Correctly addresses consent management and anti-spam compliance."
 
   - name: personalization-methodology
     description: >

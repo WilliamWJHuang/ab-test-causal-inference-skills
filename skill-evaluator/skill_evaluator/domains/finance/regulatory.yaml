@@ -7,11 +7,13 @@ rules:
       Finance skills providing investment advice, risk management, or trading
       guidance must acknowledge the regulatory context. Ignoring fiduciary
       duty, suitability requirements, or disclosure obligations creates
-      legal and compliance risk.
+      legal and compliance risk. Regulatory requirements are jurisdiction-
+      dependent (SEC/FINRA in the US, FCA in the UK, ESMA in the EU,
+      ASIC in Australia, CSA/OSC in Canada).
     applicability_patterns:
       - "(?i)investment.advice|portfolio.recommend|trading.signal|asset.allocation|financial.planning"
     required_patterns:
-      - "(?i)regulatory|compliance|fiduciary|suitability|disclosure|regulation|\\bSEC\\b|\\bFINRA\\b|\\bMiFID\\b|qualified.professional|not.financial.advice"
+      - "(?i)regulatory|compliance|fiduciary|suitability|disclosure|regulation|\\bSEC\\b|\\bFINRA\\b|\\bMiFID\\b|\\bFCA\\b|\\bASIC\\b|\\bESMA\\b|\\bCSA\\b|qualified.professional|not.financial.advice"
     antipatterns:
       - "(?i)no.regulation.applies|skip.compliance|ignore.regulatory|regulations?.don.t.matter"
     failure_severity: suspicious

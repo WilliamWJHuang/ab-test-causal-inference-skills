@@ -61,3 +61,24 @@ rules:
       Treating channels as independent ignores synergies (e.g., display
       driving branded search) and leads to suboptimal budget allocation.
     success_message: "Correctly addresses channel interaction effects in MMM."
+
+  - name: mmm-validation
+    description: >
+      Marketing Mix Models must include validation methodology — prior
+      calibration, out-of-sample holdout, or comparison with incrementality
+      test results. With tools like Meta's Robyn, Google's Meridian, and
+      PyMC-Marketing democratizing MMM, validation is critical to ensure
+      model outputs are trustworthy.
+    applicability_patterns:
+      - "marketing mix model|MMM|media mix model|Robyn|Meridian|PyMC.*Marketing|LightweightMMM"
+    required_patterns:
+      - "prior|calibrat|out.of.sample|validation|holdout|backtest|MAPE|fit.*metric|cross.*valid|Robyn|Meridian|PyMC|incremental.*calibrat"
+    antipatterns:
+      - "no.*need.*validat|trust.*the.*model|model.*is.*always.*correct"
+    failure_severity: suspicious
+    failure_message: >
+      Discusses MMM without addressing model validation. Open-source tools
+      have made MMM accessible, but prior specification, out-of-sample
+      testing, and calibration against incrementality tests are essential
+      to ensure model reliability.
+    success_message: "Correctly addresses MMM validation methodology."

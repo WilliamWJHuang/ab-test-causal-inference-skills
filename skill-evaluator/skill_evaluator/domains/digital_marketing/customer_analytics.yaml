@@ -18,7 +18,7 @@ rules:
     applicability_patterns:
       - "CLV|customer lifetime value|LTV|lifetime value|customer.*value"
     required_patterns:
-      - "probabilistic|BG/NBD|pareto.*NBD|contractual|discount.*rate|time.*horizon|prediction.*window|retention.*rate|churn.*rate|monetary.*value"
+      - "probabilistic|BG/NBD|pareto.*NBD|contractual|discount.*rate|time.*horizon|prediction.*window|retention.*rate|churn.*rate|monetary.*value|cohort.*based|cohort.*CLV"
     antipatterns:
       - "CLV.*=.*average.*revenue|simply.*multiply.*avg|just.*(?:sum|total|average).*revenue"
     failure_severity: incorrect

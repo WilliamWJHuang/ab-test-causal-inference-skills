@@ -1,5 +1,5 @@
 <p align="center">
-  <h1 align="center">🔍 skill-evaluator</h1>
+  <h1 align="center">🔍 agent-skill-evaluator</h1>
   <p align="center">
     <strong>Evaluate agent skills before you install them.</strong><br>
     Think <code>npm audit</code> + <code>eslint</code> for <code>SKILL.md</code> files.
@@ -114,19 +114,32 @@ The **novel differentiator**. Unlike security/structure checks that any tool can
 | **Causal Inference** | 8 | Identification strategies, parallel trends, IV assumptions, RDD bandwidth, matching balance, HTE |
 | **Experiment Design** | 8 | Power analysis, randomization, variance reduction (CUPED), pre-registration, SRM checks, sequential testing |
 | **Data Science** | 5 | Data leakage, missing data mechanisms, cross-validation, metric selection, outlier handling |
-| **Digital Marketing** | 25 | Attribution modeling, marketing mix modeling, CLV/churn methodology, SEO/SEM, email deliverability, ad tech, privacy compliance |
+| **Digital Marketing** | 28 | Attribution modeling, marketing mix modeling, CLV/churn methodology, SEO/SEM, email deliverability, ad tech, privacy compliance |
+| **Finance** | 28 | VaR/risk management, portfolio optimization, backtesting biases, DCF valuation, regulatory compliance, time series, market efficiency |
 
 The digital marketing domain is organized into 7 sub-domain files:
 
 | Sub-domain | Rules | Focus |
 |:---|:---:|:---|
 | Attribution & Measurement | 4 | Model awareness, incrementality testing, view-through caveats, cross-device |
-| Marketing Mix Modeling | 3 | Adstock/carryover, diminishing returns, channel interactions |
+| Marketing Mix Modeling | 4 | Adstock/carryover, diminishing returns, channel interactions, MMM validation |
 | Customer Analytics | 4 | CLV methodology, churn definition, segmentation, cohort analysis |
-| SEO / SEM | 4 | Technical SEO, bidding strategy, keyword research, E-E-A-T |
-| Email / CRM | 3 | Deliverability (SPF/DKIM/DMARC), list hygiene, personalization |
+| SEO / SEM | 5 | Technical SEO, bidding strategy, keyword research, E-E-A-T, AI search impact |
+| Email / CRM | 4 | Deliverability (SPF/DKIM/DMARC), list hygiene, consent compliance, personalization |
 | Ad Tech / Programmatic | 3 | Auction mechanics, frequency capping, viewability and fraud |
 | General Marketing | 4 | Funnel understanding, privacy compliance, tracking infrastructure, KPI alignment |
+
+The finance domain is organized into 7 sub-domain files:
+
+| Sub-domain | Rules | Focus |
+|:---|:---:|:---|
+| Risk Management | 3 | VaR tail-risk assumptions, stress testing, risk-adjusted metrics (Sharpe/Sortino) |
+| Portfolio & Allocation | 4 | MPT limitations, benchmark selection, diversification depth, rebalancing methodology |
+| Backtesting | 5 | Look-ahead bias, survivorship bias, transaction costs, overfitting, multiple testing bias |
+| Valuation & Pricing | 3 | DCF sensitivity analysis, relative valuation pitfalls, option pricing model selection |
+| Regulatory & Compliance | 3 | Regulatory awareness (SEC/FCA/ESMA), KYC/AML, financial data privacy |
+| Time Series & Forecasting | 3 | Stationarity requirements, regime changes, return distribution assumptions |
+| General Finance | 4 | Return calculation methodology, inflation adjustment, tax implications, market efficiency |
 
 ### Domain Auto-Detection
 

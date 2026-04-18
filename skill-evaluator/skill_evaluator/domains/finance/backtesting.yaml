@@ -79,3 +79,24 @@ rules:
       live trading. Out-of-sample validation is essential.
     success_message: >
       Addresses overfitting risk and recommends out-of-sample validation.
+
+  - name: multiple-testing-bias
+    description: >
+      When evaluating multiple strategies or parameter combinations,
+      backtesting must account for multiple testing bias. Testing hundreds
+      of strategies and selecting the best one inflates expected performance
+      due to selection bias (Harvey, Liu & Zhu 2016).
+    applicability_patterns:
+      - "(?i)backtest|strateg.*compar|strateg.*select|parameter.*sweep|signal.*research"
+    required_patterns:
+      - "(?i)multiple.test|multiple.compar|family.wise|Bonferroni|false.discovery|deflated.Sharpe|selection.bias|data.mining|cherry.pick|p.hack"
+    antipatterns:
+      - "(?i)pick.the.best.backtest|choose.the.highest.Sharpe|best.performing.strategy.wins"
+    failure_severity: incorrect
+    failure_message: >
+      Backtesting guidance does not address multiple testing bias. When
+      evaluating many strategies, the best-performing one is likely inflated
+      by selection bias. Use deflated Sharpe ratios, family-wise error
+      correction, or false discovery rate controls.
+    success_message: >
+      Addresses multiple testing bias in strategy evaluation.
