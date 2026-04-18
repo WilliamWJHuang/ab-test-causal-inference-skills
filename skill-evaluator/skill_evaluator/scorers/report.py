@@ -102,7 +102,7 @@ class ReportGenerator:
         maintenance: MaintenanceResult,
     ) -> None:
         """Print a rich-formatted report to the terminal."""
-        console = Console(force_terminal=True)
+        console = Console(force_terminal=True, legacy_windows=False)
 
         # ── Header ────────────────────────────────────────────────────────
         grade_color = GRADE_COLORS.get(composite.overall_grade, "white")
@@ -159,7 +159,7 @@ class ReportGenerator:
         extra: str = "",
     ) -> None:
         """Print a findings section."""
-        console.print(f"  [bold]{'─' * 50}[/bold]")
+        console.print(f"  [bold]{'-' * 50}[/bold]")
         header = f"  [bold]{title}[/bold]"
         if extra:
             header += f"  [dim]({extra})[/dim]"
