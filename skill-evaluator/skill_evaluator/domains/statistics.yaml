@@ -13,19 +13,22 @@ description: >
 rules:
   - name: normality-check-before-parametric
     description: >
-      When recommending parametric tests (t-test, ANOVA), the skill should
-      mention checking normality assumptions.
+      When recommending parametric tests (t-test, ANOVA) with small samples
+      (N < 30 per group), the skill should mention checking normality
+      assumptions. For larger samples, the Central Limit Theorem provides
+      robustness — the focus should shift to homoscedasticity and outliers.
     applicability_patterns:
       - "t-test|t test"
       - "anova|analysis of variance"
     required_patterns:
-      - "normal|normality|shapiro|kolmogorov|q-q plot|qqplot|distribution"
+      - "normal|normality|shapiro|kolmogorov|q-q plot|qqplot|distribution|CLT|central limit|robust"
     antipatterns: []
     failure_severity: suspicious
     failure_message: >
-      Recommends parametric tests (t-test/ANOVA) without mentioning normality
-      checks. Parametric tests assume normality — this should be verified or
-      non-parametric alternatives should be offered.
+      Recommends parametric tests without mentioning normality considerations.
+      For small samples, normality should be checked. For large samples,
+      acknowledge CLT robustness while still checking for outliers and
+      heteroscedasticity.
     success_message: "Correctly addresses normality assumptions for parametric tests."
 
   - name: effect-size-reporting
@@ -37,11 +40,11 @@ rules:
       - "effect size|cohen|eta.squared|odds ratio|risk ratio|confidence interval|CI"
     antipatterns:
       - "the result is significant"
-    failure_severity: suspicious
+    failure_severity: incorrect
     failure_message: >
       Discusses statistical significance without mentioning effect sizes.
       P-values alone are insufficient — effect sizes and confidence intervals
-      should always be reported (APA 7th edition, ASA Statement on p-values).
+      should always be reported (APA 7th edition, ASA Statement on p-values 2016).
     success_message: "Correctly requires effect size reporting alongside significance testing."
 
   - name: multiple-comparison-correction
@@ -131,3 +134,41 @@ rules:
       Discusses linear regression without mentioning key assumptions
       (linearity, homoscedasticity, no multicollinearity, etc.).
     success_message: "Correctly addresses regression assumptions."
+
+  - name: confidence-interval-interpretation
+    description: >
+      Skills discussing confidence intervals must avoid the common
+      misinterpretation that "there is a 95% probability the true value
+      is in this interval." A frequentist CI is a property of the
+      procedure (coverage over repeated sampling), not a probability
+      statement about the parameter.
+    applicability_patterns:
+      - "confidence interval|CI|confidence level"
+    required_patterns:
+      - "coverage|procedure|repeated sampling|long.run|frequentist|interpretation|contain.*true"
+    antipatterns:
+      - "(?i)probability.*true.*value.*(?:is|falls|lies).*in.*(?:the|this).*interval|(?:95|90)%.*chance.*parameter"
+    failure_severity: suspicious
+    failure_message: >
+      Discusses confidence intervals without clarifying their correct
+      interpretation. A 95% CI does not mean "95% probability the true
+      value is in this interval" — it means the procedure produces
+      intervals that contain the true value 95% of the time.
+    success_message: "Correctly interprets confidence intervals."
+
+  - name: simpson-paradox-awareness
+    description: >
+      Skills discussing aggregated data or group comparisons should be
+      aware of Simpson's Paradox — a trend present in subgroups can
+      reverse when groups are combined, due to a confounding variable.
+    applicability_patterns:
+      - "(?i)aggregat.*data|group.*comparison|subgroup.*analysis|stratif.*analysis|overall.*vs"
+    required_patterns:
+      - "(?i)simpson|paradox|confound|lurking.*variable|aggregation.*bias|ecological.*fallacy|stratif"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses aggregated data or group comparisons without awareness of
+      Simpson's Paradox. Aggregated trends can be misleading when
+      subgroup compositions differ — always consider stratification.
+    success_message: "Correctly addresses Simpson's Paradox in aggregated analysis."

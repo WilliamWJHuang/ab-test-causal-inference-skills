@@ -43,7 +43,7 @@ rules:
     applicability_patterns:
       - "difference.in.difference|DiD|diff-in-diff"
     required_patterns:
-      - "parallel trend|pre-trend|common trend|pre-treatment"
+      - "parallel trend|pre-trend|common trend|pre-treatment|staggered|event.study|Callaway|Goodman.Bacon|Sun.*Abraham|TWFE"
     antipatterns: []
     failure_severity: incorrect
     failure_message: >
@@ -111,7 +111,7 @@ rules:
       Skills should clearly distinguish observational from experimental data
       and adjust methodology accordingly.
     applicability_patterns:
-      - "observational|experiment|RCT|randomized"
+      - "(?i)observational.*stud|observational.*data|quasi.experiment|natural.*experiment|causal.*(?:method|design|stud)"
     required_patterns:
       - "observational.*experimental|experimental.*observational|RCT|randomiz|selection bias|confound"
     antipatterns: []
@@ -120,3 +120,21 @@ rules:
       Does not clearly distinguish between observational and experimental settings.
       The available methods differ dramatically between these settings.
     success_message: "Correctly distinguishes observational from experimental data."
+
+  - name: sutva-interference
+    description: >
+      Causal inference skills should address the Stable Unit Treatment Value
+      Assumption (SUTVA) — that one unit's treatment does not affect another
+      unit's outcome. This is violated in network experiments, marketplace
+      experiments, and geographic proximity settings.
+    applicability_patterns:
+      - "(?i)treatment effect|A/B test|experiment|network.*experiment|marketplace|platform.*experiment"
+    required_patterns:
+      - "(?i)SUTVA|interference|spillover|contamination|stable.unit|network.effect|cluster.*random|switchback"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses treatment effects without addressing potential interference
+      between units (SUTVA violation). In network, marketplace, and platform
+      experiments, one user's treatment can affect others' outcomes.
+    success_message: "Correctly addresses SUTVA and interference considerations."

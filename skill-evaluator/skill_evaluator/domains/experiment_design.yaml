@@ -43,7 +43,7 @@ rules:
     applicability_patterns:
       - "a/b test|experiment|variance|precision|sensitivity"
     required_patterns:
-      - "CUPED|CUPAC|variance reduction|stratif|covariate|pre-experiment|regression adjustment"
+      - "CUPED|CUPAC|variance reduction|stratif|covariate|pre-experiment|regression adjustment|blocking|paired|repeated.measures"
     antipatterns: []
     failure_severity: suspicious
     failure_message: >
@@ -106,7 +106,9 @@ rules:
     failure_severity: suspicious
     failure_message: >
       Does not mention SRM (Sample Ratio Mismatch) checks. SRM is the single
-      most important diagnostic — if the sample ratio is off, all results are invalid.
+      most important diagnostic — if the sample ratio is off, investigate
+      root causes (logging bugs, bot filtering, assignment errors) and
+      consider invalidating the experiment.
     success_message: "Correctly requires Sample Ratio Mismatch checks."
 
   - name: effect-size-over-significance
@@ -123,3 +125,20 @@ rules:
       Focuses on statistical significance without emphasizing effect sizes
       and practical significance.
     success_message: "Correctly emphasizes effect sizes over statistical significance."
+
+  - name: interference-awareness
+    description: >
+      Experiment design should address interference — when one user's
+      treatment assignment affects another user's outcome. Common in
+      marketplace, social network, and geographic experiments.
+    applicability_patterns:
+      - "(?i)experiment.*design|A/B test|platform.*experiment|marketplace|network.*experiment|randomiz"
+    required_patterns:
+      - "(?i)interference|spillover|SUTVA|cluster.*random|switchback|network.*effect|contamination|isolation"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses experiment design without addressing interference between
+      units. In platform and marketplace experiments, cluster randomization
+      or switchback designs may be needed to handle spillovers.
+    success_message: "Correctly addresses interference in experiment design."

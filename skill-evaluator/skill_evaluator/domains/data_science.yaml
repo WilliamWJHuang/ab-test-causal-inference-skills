@@ -62,7 +62,7 @@ rules:
     required_patterns:
       - "imbalanced|class.distribution|threshold|tradeoff|business.*metric|domain.*specific"
     antipatterns:
-      - "accuracy is the best|always use accuracy"
+      - "accuracy is the best|always use accuracy|accuracy.*(?:only|sufficient|enough).*metric"
     failure_severity: suspicious
     failure_message: >
       Discusses evaluation metrics without mentioning class imbalance considerations
@@ -83,3 +83,39 @@ rules:
       Discusses outliers without encouraging investigation of root causes.
       Automatic outlier removal can introduce survivorship bias.
     success_message: "Correctly addresses thoughtful outlier handling."
+
+  - name: interpretability-awareness
+    description: >
+      ML skills should address model interpretability and explainability,
+      especially for high-stakes applications. With the EU AI Act and
+      growing regulatory requirements, responsible ML requires transparency.
+    applicability_patterns:
+      - "(?i)model|prediction|classifier|regression|neural|machine.learning|deep.learning"
+    required_patterns:
+      - "(?i)interpretab|explainab|SHAP|LIME|feature.importan|partial.dependence|counterfactual|transparent|black.box"
+    antipatterns: []
+    failure_severity: suspicious
+    failure_message: >
+      Discusses ML modeling without addressing interpretability.
+      For high-stakes applications, model explainability is increasingly
+      required by regulation (EU AI Act) and best practice.
+    success_message: "Correctly addresses model interpretability and explainability."
+
+  - name: class-imbalance-handling
+    description: >
+      Skills discussing classification on imbalanced datasets must address
+      handling strategies beyond just metric selection — including
+      resampling, cost-sensitive learning, and threshold tuning.
+    applicability_patterns:
+      - "(?i)imbalanc|rare.*event|minority.*class|skewed.*class|fraud|anomaly.*detect"
+    required_patterns:
+      - "(?i)oversamp|undersamp|SMOTE|class.*weight|focal.*loss|cost.sensitive|threshold|resampl|stratif"
+    antipatterns:
+      - "(?i)just.*oversample|always.*SMOTE|SMOTE.*always"
+    failure_severity: suspicious
+    failure_message: >
+      Discusses class imbalance without addressing handling strategies.
+      Naive oversampling can cause overfitting; SMOTE has known limitations
+      with high-dimensional data. Threshold tuning and cost-sensitive
+      learning are often more effective.
+    success_message: "Correctly addresses class imbalance handling strategies."

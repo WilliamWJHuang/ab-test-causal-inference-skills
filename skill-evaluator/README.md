@@ -110,10 +110,10 @@ The **novel differentiator**. Unlike security/structure checks that any tool can
 
 | Domain | Rules | Checks |
 |:---|:---:|:---|
-| **Statistics** | 8 | Normality assumptions, effect sizes, multiple comparisons, power analysis, seed sensitivity, regression assumptions |
-| **Causal Inference** | 8 | Identification strategies, parallel trends, IV assumptions, RDD bandwidth, matching balance, HTE |
-| **Experiment Design** | 8 | Power analysis, randomization, variance reduction (CUPED), pre-registration, SRM checks, sequential testing |
-| **Data Science** | 5 | Data leakage, missing data mechanisms, cross-validation, metric selection, outlier handling |
+| **Statistics** | 10 | Normality assumptions, effect sizes, multiple comparisons, power analysis, seed sensitivity, regression assumptions, CI interpretation, Simpson's Paradox |
+| **Causal Inference** | 9 | Identification strategies, parallel trends (incl. staggered DiD), IV assumptions, RDD bandwidth, matching balance, HTE, SUTVA/interference |
+| **Experiment Design** | 9 | Power analysis, randomization, variance reduction, pre-registration, SRM checks, sequential testing, interference awareness |
+| **Data Science** | 7 | Data leakage, missing data mechanisms, cross-validation, metric selection, outlier handling, interpretability, class imbalance |
 | **Digital Marketing** | 28 | Attribution modeling, marketing mix modeling, CLV/churn methodology, SEO/SEM, email deliverability, ad tech, privacy compliance |
 | **Finance** | 28 | VaR/risk management, portfolio optimization, backtesting biases, DCF valuation, regulatory compliance, time series, market efficiency |
 
@@ -235,7 +235,68 @@ These are directions we'd like to explore. Contributions welcome.
 
 **Behavioral evaluation.** The ultimate test of a skill is: does an agent using it produce better outputs? A test harness with known-correct answers (e.g., "given this dataset, should the agent refuse to run the test?") would let us score skills by downstream impact rather than surface patterns. This is the direction taken by SkillsBench-style evaluations and would make this tool a performance predictor, not just a linter.
 
-**More domains.** We're actively expanding domain coverage. Next candidates include finance, healthcare, software engineering, and product management. Contributions welcome — each new domain just requires a YAML rule set and test fixtures.
+**More domains.** We're actively expanding domain coverage. Next candidates include healthcare, product management, and cybersecurity. Contributions welcome — each new domain just requires a YAML rule set and test fixtures.
+
+---
+
+## CI / CD Integration
+
+### GitHub Action
+
+Use `agent-skill-evaluator` as a reusable GitHub Action to evaluate skills in your CI pipeline:
+
+```yaml
+# .github/workflows/skill-eval.yml
+name: Evaluate Skills
+on: [push, pull_request]
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Evaluate skill
+        uses: WilliamWJHuang/agent-skill-evaluator@master
+        id: eval
+        with:
+          path: './my-skill/'       # Path to skill directory
+          fail-below: '60'          # Fail CI if score < 60
+          # domain: 'statistics'    # Optional: force a domain
+
+      - name: Print results
+        run: |
+          echo "Score: ${{ steps.eval.outputs.score }}"
+          echo "Grade: ${{ steps.eval.outputs.grade }}"
+```
+
+#### Inputs
+
+| Input | Required | Default | Description |
+|:---|:---:|:---:|:---|
+| `path` | ✅ | `.` | Path to skill directory or SKILL.md |
+| `domain` | | auto | Force a specific domain |
+| `fail-below` | | `50` | Fail if score is below threshold |
+| `format` | | `terminal` | Output format: `terminal`, `md`, `json` |
+
+#### Outputs
+
+| Output | Description |
+|:---|:---|
+| `score` | Overall score (0-100) |
+| `grade` | Letter grade (A+ through F) |
+| `report` | Full markdown evaluation report |
+
+The action also writes a **Job Summary** with the full report, visible directly in the GitHub Actions UI.
+
+### CLI in CI (without the Action)
+
+```bash
+pip install git+https://github.com/WilliamWJHuang/agent-skill-evaluator.git
+skill-eval ./my-skill/ --fail-below 60
+```
+
+The `--fail-below` flag exits with code 1 if the score is below the threshold.
 
 ---
 
