@@ -4,6 +4,11 @@
     <strong>Evaluate agent skills before you install them.</strong><br>
     Think <code>npm audit</code> + <code>eslint</code> for <code>SKILL.md</code> files.
   </p>
+  <p align="center">
+    <a href="https://pypi.org/project/agent-skill-evaluator/"><img src="https://img.shields.io/pypi/v/agent-skill-evaluator?color=blue" alt="PyPI"></a>
+    <a href="https://pypi.org/project/agent-skill-evaluator/"><img src="https://img.shields.io/pypi/pyversions/agent-skill-evaluator" alt="Python"></a>
+    <a href="https://github.com/WilliamWJHuang/agent-skill-evaluator/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
+  </p>
 </p>
 
 ---
@@ -25,9 +30,11 @@ There are **1,000+ agent skills** on GitHub. Most have no quality signal beyond 
 ## Quick Start
 
 ```bash
-# Install
-cd skill-evaluator
-pip install -e .
+# Install from PyPI
+pip install agent-skill-evaluator
+
+# With LLM-as-judge support (optional)
+pip install agent-skill-evaluator[llm]
 
 # Evaluate a local skill
 skill-eval ../skills/experiment-designer/
@@ -44,6 +51,12 @@ skill-eval ./some-skill/ --domain digital-marketing
 
 # CI mode: fail if score is below threshold
 skill-eval ./some-skill/ --fail-below 70
+
+# LLM-as-judge: semantic verification of domain rules
+skill-eval ./some-skill/ --llm google           # uses Gemini 2.0 Flash
+skill-eval ./some-skill/ --llm openai            # uses GPT-4o-mini
+skill-eval ./some-skill/ --llm anthropic          # uses Claude Sonnet
+skill-eval ./some-skill/ --llm google --llm-model gemini-2.5-pro  # custom model
 ```
 
 ---
@@ -206,13 +219,55 @@ A few things worth knowing:
 
 ---
 
+## LLM-as-Judge (Semantic Verification)
+
+The domain correctness analyzer uses regex by default (fast, free, deterministic). With `--llm`, you can enable **semantic verification** that re-checks regex failures using an LLM to catch false negatives.
+
+### How It Works
+
+1. **Regex runs first** (free, fast) — flags potential failures
+2. **LLM re-checks failures only** — saves ~70% of API calls
+3. **High-confidence overrides** — LLM must be ≥70% confident to flip a regex FAIL to PASS
+4. **Antipatterns are never overridden** — exact-string matches (D100) are always preserved
+
+### Setup
+
+```bash
+# Install LLM dependencies
+pip install agent-skill-evaluator[llm]
+
+# Set your API key (pick one)
+export GOOGLE_API_KEY=your-key       # Google Gemini (cheapest)
+export OPENAI_API_KEY=your-key       # OpenAI
+export ANTHROPIC_API_KEY=your-key    # Anthropic
+```
+
+### Usage
+
+```bash
+skill-eval ./my-skill/ --llm google              # Gemini 2.0 Flash
+skill-eval ./my-skill/ --llm openai              # GPT-4o-mini
+skill-eval ./my-skill/ --llm anthropic            # Claude Sonnet
+skill-eval ./my-skill/ --llm google --llm-model gemini-2.5-pro
+```
+
+> **Privacy:** When using `--llm`, your skill content is sent to the specified provider's API. No data is stored or logged by the evaluator. Without `--llm`, the tool is fully offline.
+
+### Supported Providers
+
+| Provider | Default Model | Env Variable |
+|:---|:---|:---|
+| `google` | gemini-2.0-flash | `GOOGLE_API_KEY` |
+| `openai` | gpt-4o-mini | `OPENAI_API_KEY` |
+| `anthropic` | claude-sonnet-4-5-20250514 | `ANTHROPIC_API_KEY` |
+
+---
+
 ## Future Research
 
 These are directions we'd like to explore. Contributions welcome.
 
 **Empirical weight calibration.** The dimension weights (Security 20%, Domain 25%, etc.) are based on informed judgment, not data. The right approach is to score a labeled corpus of known-good vs. known-bad skills and use the results to find weights that best predict the label. If you have a labeled skill corpus or want to help build one, open an issue.
-
-**Semantic domain checks.** The domain correctness analyzer currently uses regex patterns — it checks whether certain keywords appear, not whether the guidance is actually correct. Replacing this with embedding-based or lightweight LLM checks (e.g., "does this skill enforce power analysis, or just mention it?") would substantially improve accuracy.
 
 **Behavioral evaluation.** The ultimate test of a skill is: does an agent using it produce better outputs? A test harness with known-correct answers (e.g., "given this dataset, should the agent refuse to run the test?") would let us score skills by downstream impact rather than surface patterns. This is the direction taken by SkillsBench-style evaluations and would make this tool a performance predictor, not just a linter.
 
@@ -273,7 +328,7 @@ The action also writes a **Job Summary** with the full report, visible directly 
 ### CLI in CI (without the Action)
 
 ```bash
-pip install git+https://github.com/WilliamWJHuang/agent-skill-evaluator.git
+pip install agent-skill-evaluator
 skill-eval ./my-skill/ --fail-below 60
 ```
 
