@@ -1,0 +1,81 @@
+domain: finance
+subdomain: backtesting
+version: "1.0.0"
+rules:
+  - name: look-ahead-bias
+    description: >
+      Backtesting guidance must address look-ahead bias (using information
+      not available at the time of the simulated trade). This includes
+      point-in-time data requirements, rebalancing dates, and corporate
+      action adjustments.
+    applicability_patterns:
+      - "(?i)backtest|historical.simulation|strategy.test|paper.trad|walk.forward"
+    required_patterns:
+      - "(?i)look.ahead|point.in.time|forward.looking.bias|information.leakage|data.snooping|future.information"
+    antipatterns:
+      - "(?i)use.all.available.data|no.need.to.worry.about.timing|just.run.it.on.history"
+    failure_severity: incorrect
+    failure_message: >
+      Backtesting guidance does not address look-ahead bias. Strategies that
+      use future information in simulation will show artificially inflated
+      returns that are not achievable in live trading.
+    success_message: >
+      Correctly identifies and addresses look-ahead bias in backtesting.
+
+  - name: survivorship-bias
+    description: >
+      Backtesting must use survivorship-bias-free datasets. Testing strategies
+      only on stocks that still exist today systematically excludes failures
+      and inflates historical returns.
+    applicability_patterns:
+      - "(?i)backtest|historical.data|strategy.evaluation|stock.screen|universe.selection"
+    required_patterns:
+      - "(?i)survivorship.bias|delisted|survivor.free|include.failed|dead.stocks|complete.universe"
+    antipatterns:
+      - "(?i)use.current.constituents|today.s.S.P.500.members|current.universe.is.fine"
+    failure_severity: incorrect
+    failure_message: >
+      Backtesting guidance does not address survivorship bias. Using only
+      currently listed securities inflates historical performance by
+      excluding companies that went bankrupt or were delisted.
+    success_message: >
+      Correctly addresses survivorship bias in historical analysis.
+
+  - name: transaction-costs-and-slippage
+    description: >
+      Backtesting must account for transaction costs, bid-ask spreads,
+      market impact, and slippage. Strategies with high turnover can look
+      profitable gross of costs but destroy value net of costs.
+    applicability_patterns:
+      - "(?i)backtest|trading.strategy|strategy.performance|turnover|execution"
+    required_patterns:
+      - "(?i)transaction.cost|trading.cost|slippage|bid.ask|market.impact|commission|execution.cost|net.of.cost"
+    antipatterns:
+      - "(?i)ignore.transaction.costs|costs.are.negligible|frictionless|zero.cost.trad"
+    failure_severity: incorrect
+    failure_message: >
+      Backtesting guidance ignores transaction costs and market impact.
+      High-turnover strategies often show positive gross returns but
+      negative net returns after accounting for real-world friction.
+    success_message: >
+      Properly accounts for transaction costs and market impact in backtesting.
+
+  - name: overfitting-to-history
+    description: >
+      Strategy backtesting must address overfitting risk. Too many parameters
+      tuned on historical data will produce a strategy that fits noise rather
+      than signal. Out-of-sample testing, cross-validation, or combinatorial
+      purged methods are essential.
+    applicability_patterns:
+      - "(?i)backtest|parameter.optim|strategy.tuning|curve.fitting|in.sample"
+    required_patterns:
+      - "(?i)out.of.sample|overfit|cross.validat|walk.forward|combinatorial|parameter.stability|robustness"
+    antipatterns:
+      - "(?i)optimize.on.all.data|more.parameters.is.better|tune.until.it.works"
+    failure_severity: incorrect
+    failure_message: >
+      Backtesting guidance does not address overfitting risk. Strategies
+      with many tuned parameters will fit historical noise and fail in
+      live trading. Out-of-sample validation is essential.
+    success_message: >
+      Addresses overfitting risk and recommends out-of-sample validation.

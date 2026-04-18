@@ -1,0 +1,80 @@
+domain: finance
+subdomain: general-finance
+version: "1.0.0"
+rules:
+  - name: return-calculation-methodology
+    description: >
+      Finance skills must use appropriate return calculations. Log returns
+      vs. simple returns have different aggregation properties. Annualization
+      must account for compounding. Failure to distinguish these leads to
+      materially incorrect performance reporting.
+    applicability_patterns:
+      - "(?i)return.calculation|portfolio.return|performance.report|annuali[sz]|compound"
+    required_patterns:
+      - "(?i)log.return|simple.return|compound|geometric.mean|arithmetic.mean|time.weight|money.weight|annuali[sz]"
+    antipatterns:
+      - "(?i)just.average.the.returns|arithmetic.mean.is.always.correct|monthly.times.12"
+    failure_severity: incorrect
+    failure_message: >
+      Return calculation guidance is incorrect or oversimplified.
+      Arithmetic mean overstates compounded returns. Must distinguish
+      geometric vs. arithmetic, log vs. simple, and time- vs. money-weighted.
+    success_message: >
+      Correctly discusses return calculation methodology and compounding.
+
+  - name: inflation-adjustment
+    description: >
+      Long-horizon financial analysis must distinguish nominal vs. real
+      returns. Comparing returns across decades without inflation adjustment
+      is misleading. Retirement planning, long-term projections, and
+      historical comparisons require real (inflation-adjusted) values.
+    applicability_patterns:
+      - "(?i)long.term|retirement|historical.return|decade|wealth.projection|financial.planning|real.return"
+    required_patterns:
+      - "(?i)inflation|real.return|nominal.vs.real|purchasing.power|CPI|price.level.adjust"
+    antipatterns:
+      - "(?i)inflation.doesn.t.matter|ignore.inflation|nominal.is.fine.for.long.term"
+    failure_severity: suspicious
+    failure_message: >
+      Long-horizon financial analysis does not address inflation adjustment.
+      Nominal returns overstate real purchasing power growth over long periods.
+    success_message: >
+      Properly distinguishes nominal vs. real returns for long-horizon analysis.
+
+  - name: tax-implications
+    description: >
+      Investment and trading guidance should acknowledge tax implications.
+      After-tax returns can differ dramatically from pre-tax returns due to
+      capital gains treatment (short-term vs. long-term), dividend taxation,
+      and tax-loss harvesting opportunities.
+    applicability_patterns:
+      - "(?i)investment.strategy|trading.strategy|portfolio.management|tax.loss|capital.gain|dividend"
+    required_patterns:
+      - "(?i)tax.implic|after.tax|capital.gain.tax|tax.efficien|tax.loss.harvest|tax.aware|pre.tax.vs|tax.drag"
+    antipatterns:
+      - "(?i)taxes?.don.t.affect|ignore.tax|pre.tax.is.enough|tax.doesn.t.matter"
+    failure_severity: suspicious
+    failure_message: >
+      Investment guidance ignores tax implications. After-tax returns can
+      differ significantly from pre-tax, especially for high-turnover strategies.
+    success_message: >
+      Acknowledges tax implications in investment guidance.
+
+  - name: market-efficiency-awareness
+    description: >
+      Finance skills claiming to generate alpha or identify mispricings
+      must acknowledge market efficiency considerations. What edge does
+      the strategy exploit, and why hasn't it been arbitraged away?
+    applicability_patterns:
+      - "(?i)alpha|outperform|beat.the.market|mispricing|anomaly|excess.return|market.inefficien"
+    required_patterns:
+      - "(?i)market.efficien|EMH|informational.edge|transaction.cost|capacity|arbitrage|competi|edge.decay|crowded"
+    antipatterns:
+      - "(?i)easy.to.beat.the.market|guaranteed.alpha|market.is.always.wrong|free.lunch"
+    failure_severity: suspicious
+    failure_message: >
+      Alpha-generation guidance does not address market efficiency. Claims
+      of outperformance need justification for why the edge exists and
+      persists despite competition.
+    success_message: >
+      Discusses market efficiency and justifies the proposed edge.

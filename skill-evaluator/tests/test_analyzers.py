@@ -28,6 +28,8 @@ BAD_SKILL = FIXTURES_DIR / "bad-skill"
 MALICIOUS_SKILL = FIXTURES_DIR / "malicious-skill"
 GOOD_MARKETING_SKILL = FIXTURES_DIR / "good-marketing-skill"
 BAD_MARKETING_SKILL = FIXTURES_DIR / "bad-marketing-skill"
+GOOD_FINANCE_SKILL = FIXTURES_DIR / "good-finance-skill"
+BAD_FINANCE_SKILL = FIXTURES_DIR / "bad-finance-skill"
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -230,6 +232,71 @@ class TestDigitalMarketingDomain:
         assert result.domain == "digital-marketing"
         # Most rules should be not-applicable since it's a stats skill
         assert result.rules_not_applicable > 0
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Finance Domain Tests
+# ══════════════════════════════════════════════════════════════════════════════
+
+class TestFinanceDomain:
+    """Tests for the finance domain rules (7 sub-domain YAMLs)."""
+
+    def setup_method(self):
+        self.analyzer = DomainCorrectnessAnalyzer()
+
+    def test_good_finance_skill_domain_detection(self):
+        """Good finance skill should auto-detect as finance."""
+        result = self.analyzer.analyze(GOOD_FINANCE_SKILL)
+        assert result.domain == "finance", (
+            f"Expected finance, got {result.domain}"
+        )
+
+    def test_good_finance_skill_passes_rules(self):
+        """Good fixture should pass the majority of applicable rules."""
+        result = self.analyzer.analyze(GOOD_FINANCE_SKILL)
+        assert result.rules_passed > 0, "Good finance skill should pass some rules"
+        assert result.score >= 60, f"Good finance skill score too low: {result.score}"
+
+    def test_good_finance_loads_all_subdomain_rules(self):
+        """Verify that multi-file domain loading merges all 7 YAML files."""
+        rules = self.analyzer._load_rules("finance")
+        # 7 files × 3-4 rules = 23 total rules
+        assert len(rules) >= 20, (
+            f"Expected ~23 rules from 7 sub-domain files, got {len(rules)}"
+        )
+
+    def test_bad_finance_skill_fails_rules(self):
+        """Bad fixture should trigger failures on applicable rules."""
+        result = self.analyzer.analyze(BAD_FINANCE_SKILL, domain="finance")
+        assert result.rules_failed > 0, "Bad finance skill should fail rules"
+        assert result.score < 60, f"Bad finance skill score too high: {result.score}"
+
+    def test_bad_finance_skill_backtesting_antipattern(self):
+        """Bad fixture ignores survivorship bias and transaction costs — should trigger antipatterns."""
+        result = self.analyzer.analyze(BAD_FINANCE_SKILL, domain="finance")
+        incorrect_findings = [
+            f for f in result.findings if f.severity == "incorrect"
+        ]
+        assert len(incorrect_findings) > 0, (
+            "Bad finance skill should have at least one 'incorrect' finding "
+            "(e.g., survivorship bias, look-ahead bias, VaR assumptions)"
+        )
+
+    def test_bad_finance_skill_var_antipattern(self):
+        """Bad fixture claims VaR with normal distribution is adequate."""
+        result = self.analyzer.analyze(BAD_FINANCE_SKILL, domain="finance")
+        rule_names = [f.rule_name for f in result.findings if f.severity != "correct"]
+        assert any("var" in name.lower() or "risk" in name.lower()
+                    for name in rule_names), (
+            f"Should detect VaR assumption antipattern, got rules: {rule_names}"
+        )
+
+    def test_finance_not_confused_with_stats(self):
+        """Finance skill should not be detected as statistics."""
+        result = self.analyzer.analyze(GOOD_FINANCE_SKILL)
+        assert result.domain == "finance", (
+            f"Finance skill misdetected as {result.domain}"
+        )
 
 
 # ══════════════════════════════════════════════════════════════════════════════

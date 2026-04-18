@@ -1,0 +1,59 @@
+domain: finance
+subdomain: regulatory-compliance
+version: "1.0.0"
+rules:
+  - name: regulatory-awareness
+    description: >
+      Finance skills providing investment advice, risk management, or trading
+      guidance must acknowledge the regulatory context. Ignoring fiduciary
+      duty, suitability requirements, or disclosure obligations creates
+      legal and compliance risk.
+    applicability_patterns:
+      - "(?i)investment.advice|portfolio.recommend|trading.signal|asset.allocation|financial.planning"
+    required_patterns:
+      - "(?i)regulatory|compliance|fiduciary|suitability|disclosure|regulation|\\bSEC\\b|\\bFINRA\\b|\\bMiFID\\b|qualified.professional|not.financial.advice"
+    antipatterns:
+      - "(?i)no.regulation.applies|skip.compliance|ignore.regulatory|regulations?.don.t.matter"
+    failure_severity: suspicious
+    failure_message: >
+      Financial guidance lacks regulatory awareness. Investment advice is
+      heavily regulated — skills should acknowledge fiduciary duty, suitability
+      requirements, or include appropriate disclaimers.
+    success_message: >
+      Includes appropriate regulatory awareness and compliance considerations.
+
+  - name: anti-money-laundering
+    description: >
+      Skills handling transaction monitoring, customer onboarding, or payment
+      processing must reference KYC/AML requirements. Ignoring these creates
+      significant legal exposure.
+    applicability_patterns:
+      - "(?i)transaction.monitor|customer.onboard|payment.processing|suspicious.activity|account.open"
+    required_patterns:
+      - "(?i)KYC|know.your.customer|AML|anti.money.launder|suspicious.activity.report|\\bSAR\\b|customer.due.diligence|\\bCDD\\b"
+    antipatterns:
+      - "(?i)skip.identity.verification|no.need.for.KYC|ignore.suspicious.transactions"
+    failure_severity: incorrect
+    failure_message: >
+      Transaction/onboarding guidance ignores KYC/AML requirements. This
+      creates serious legal and regulatory risk.
+    success_message: >
+      Properly references KYC/AML requirements in transaction processing.
+
+  - name: data-privacy-financial
+    description: >
+      Finance skills handling customer financial data must address data
+      privacy, PII protection, and relevant regulations (GLBA, GDPR for
+      financial data, PCI-DSS for payment card data).
+    applicability_patterns:
+      - "(?i)customer.data|financial.data|account.information|credit.card|payment.data|personally.identifiable"
+    required_patterns:
+      - "(?i)\\bPII\\b|data.privacy|\\bGLBA\\b|\\bGDPR\\b|\\bPCI|encryp|anonymi[sz]|data.protection|confidential"
+    antipatterns:
+      - "(?i)store.in.plaintext|no.need.to.encrypt|privacy.doesn.t.apply|share.freely"
+    failure_severity: incorrect
+    failure_message: >
+      Financial data handling guidance ignores data privacy and protection
+      requirements (GLBA, GDPR, PCI-DSS).
+    success_message: >
+      Addresses data privacy and protection for financial information.

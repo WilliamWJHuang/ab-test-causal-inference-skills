@@ -188,6 +188,20 @@ class DomainCorrectnessAnalyzer:
                 "content marketing", "CTR", "click.through rate", "CPM", "CPC",
                 "cost per click", "ad creative", "marketing automation",
             ],
+            "finance": [
+                "portfolio", "asset allocation", "value at risk", "VaR",
+                "sharpe ratio", "sortino", "risk-adjusted", "drawdown",
+                "backtest", "trading strategy", "alpha", "beta",
+                "efficient frontier", "markowitz", "modern portfolio theory",
+                "DCF", "discounted cash flow", "WACC", "terminal value",
+                "P/E ratio", "EV/EBITDA", "valuation multiple",
+                "option pricing", "black-scholes", "derivatives", "implied volatility",
+                "stationarity", "unit root", "ARIMA", "GARCH",
+                "survivorship bias", "look-ahead bias", "transaction cost",
+                "KYC", "AML", "anti-money laundering", "fiduciary",
+                "capital gains", "tax-loss harvesting", "inflation adjustment",
+                "market efficiency", "EMH", "arbitrage",
+            ],
         }
 
         scores: dict[str, int] = {}

@@ -1,0 +1,61 @@
+domain: finance
+subdomain: valuation-pricing
+version: "1.0.0"
+rules:
+  - name: dcf-sensitivity
+    description: >
+      Discounted Cash Flow (DCF) guidance must address sensitivity to key
+      inputs: discount rate (WACC), terminal growth rate, and terminal value
+      as a proportion of total value. Small changes in assumptions can
+      dramatically change the output.
+    applicability_patterns:
+      - "(?i)discounted.cash.flow|\\bDCF\\b|intrinsic.value|valuation.model|terminal.value|\\bWACC\\b"
+    required_patterns:
+      - "(?i)sensitivity.analysis|scenario|terminal.value.dominat|assumption.sensitivity|discount.rate.choice|range.of.values"
+    antipatterns:
+      - "(?i)DCF.gives.(the\\s+)?exact.value|precise.valuation|one.true.value|DCF.is.objective"
+    failure_severity: incorrect
+    failure_message: >
+      DCF guidance does not discuss sensitivity analysis. Terminal value
+      typically represents 60-80% of total DCF value — small changes in
+      terminal growth rate or WACC radically change the output.
+    success_message: >
+      Correctly emphasizes sensitivity analysis and assumption uncertainty in DCF.
+
+  - name: relative-valuation-pitfalls
+    description: >
+      Relative valuation (multiples like P/E, EV/EBITDA) guidance must
+      address comparability requirements: same industry, similar growth,
+      similar risk profile, and consistent accounting treatment.
+    applicability_patterns:
+      - "(?i)P/E.ratio|EV/EBITDA|price.to.earnings|comparable|relative.valuation|multiples|comp.analysis"
+    required_patterns:
+      - "(?i)comparable|peer.group|industry.match|growth.adjust|accounting.differ|normali[sz]e|apples.to.apples"
+    antipatterns:
+      - "(?i)just.compare.P/E|lower.P/E.is.always.better|cheap.relative.to.market"
+    failure_severity: suspicious
+    failure_message: >
+      Relative valuation guidance doesn't address comparability requirements.
+      Multiples are only meaningful when comparing companies with similar
+      risk, growth, and accounting characteristics.
+    success_message: >
+      Discusses appropriate peer selection and comparability for multiples.
+
+  - name: option-pricing-model-selection
+    description: >
+      Option pricing guidance must address model selection and its
+      assumptions. Black-Scholes assumes constant volatility, continuous
+      trading, and log-normal returns — all violated in practice. Skills
+      should discuss when to use alternatives (binomial, Monte Carlo).
+    applicability_patterns:
+      - "(?i)option.pricing|Black.Scholes|derivatives|implied.volatility|option.valuation|greeks"
+    required_patterns:
+      - "(?i)volatility.smile|skew|model.assumption|constant.volatility|limitation|binomial|Monte.Carlo|stochastic.vol"
+    antipatterns:
+      - "(?i)Black.Scholes.is.(always\\s+)?correct|just.use.Black.Scholes|no.need.for.alternatives"
+    failure_severity: suspicious
+    failure_message: >
+      Option pricing guidance presents Black-Scholes without discussing its
+      assumption violations (volatility smile, jumps, discrete trading).
+    success_message: >
+      Discusses option pricing model assumptions and alternatives.

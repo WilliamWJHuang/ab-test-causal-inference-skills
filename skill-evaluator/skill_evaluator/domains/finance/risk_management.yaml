@@ -1,0 +1,59 @@
+domain: finance
+subdomain: risk-management
+version: "1.0.0"
+rules:
+  - name: var-model-assumptions
+    description: >
+      Value at Risk (VaR) guidance must acknowledge distributional assumptions
+      and tail-risk limitations. Skills that recommend VaR without discussing
+      fat tails, non-normality, or conditional VaR (CVaR/Expected Shortfall)
+      risk underestimating extreme losses.
+    applicability_patterns:
+      - "(?i)value.at.risk|\\bVaR\\b|risk.measure|market.risk"
+    required_patterns:
+      - "(?i)tail.risk|fat.tail|non.normal|expected.shortfall|CVaR|conditional.VaR|extreme.event"
+    antipatterns:
+      - "(?i)VaR\\s+(is\\s+)?sufficient|VaR\\s+captures?\\s+all|normal.distribution\\s+is\\s+(adequate|enough)"
+    failure_severity: incorrect
+    failure_message: >
+      VaR guidance assumes normality without discussing tail risks. Financial
+      returns exhibit fat tails — VaR alone underestimates extreme losses.
+      Must mention Expected Shortfall (CVaR) or tail-risk caveats.
+    success_message: >
+      Correctly addresses VaR limitations and tail-risk considerations.
+
+  - name: stress-testing-requirements
+    description: >
+      Risk management skills must include stress testing and scenario analysis,
+      not just historical or parametric measures. Correlations break down in
+      crises, making historical covariance matrices unreliable.
+    applicability_patterns:
+      - "(?i)risk.management|portfolio.risk|market.risk|risk.model"
+    required_patterns:
+      - "(?i)stress.test|scenario.analysis|extreme.scenario|crisis|tail.event|black.swan"
+    antipatterns:
+      - "(?i)historical.correlation\\s+(is\\s+)?stable|past.performance\\s+predict|correlations?\\s+(don.t|never)\\s+change"
+    failure_severity: suspicious
+    failure_message: >
+      Risk management guidance lacks stress testing or scenario analysis.
+      Historical correlations break down during market crises.
+    success_message: >
+      Includes stress testing and acknowledges correlation instability.
+
+  - name: risk-return-metrics
+    description: >
+      Skills discussing risk-adjusted returns should go beyond the Sharpe ratio.
+      The Sharpe ratio penalizes upside volatility equally with downside,
+      assumes symmetric returns, and is misleading for non-normal distributions.
+    applicability_patterns:
+      - "(?i)risk.adjusted|sharpe.ratio|performance.measure|risk.return"
+    required_patterns:
+      - "(?i)sortino|downside.risk|maximum.drawdown|calmar|information.ratio|omega.ratio|asymmetr"
+    antipatterns:
+      - "(?i)sharpe.ratio\\s+(is\\s+)?(the\\s+)?best|only.use\\s+sharpe|sharpe\\s+(is\\s+)?sufficient"
+    failure_severity: suspicious
+    failure_message: >
+      Risk-adjusted return guidance relies solely on the Sharpe ratio without
+      discussing alternatives that account for asymmetric or non-normal returns.
+    success_message: >
+      Discusses multiple risk-adjusted return metrics beyond the Sharpe ratio.

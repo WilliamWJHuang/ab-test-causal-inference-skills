@@ -1,0 +1,61 @@
+domain: finance
+subdomain: time-series-forecasting
+version: "1.0.0"
+rules:
+  - name: stationarity-awareness
+    description: >
+      Financial time series analysis must address stationarity. Most financial
+      prices are non-stationary — fitting ARMA/ARIMA models or computing
+      correlations on raw price levels without differencing or testing for
+      unit roots leads to spurious results.
+    applicability_patterns:
+      - "(?i)time.series|ARIMA|ARMA|autoregressive|forecast|price.prediction"
+    required_patterns:
+      - "(?i)stationar|unit.root|ADF|Dickey.Fuller|differenc|cointegrat|\\blog.return|Phillips.Perron"
+    antipatterns:
+      - "(?i)prices?.are?.stationary|no.need.to.check.stationar|fit.ARIMA.on.prices.directly"
+    failure_severity: incorrect
+    failure_message: >
+      Time series guidance does not address stationarity. Fitting models
+      on non-stationary price data produces spurious results. Must test
+      for unit roots and use returns or differences.
+    success_message: >
+      Correctly addresses stationarity requirements for financial time series.
+
+  - name: regime-change-awareness
+    description: >
+      Financial forecasting must acknowledge that market regimes change.
+      Models trained on bull market data will fail in bear markets. Structural
+      breaks, volatility clustering, and regime-switching should be considered.
+    applicability_patterns:
+      - "(?i)forecast|predictive.model|trading.signal|market.prediction|return.prediction|alpha.model"
+    required_patterns:
+      - "(?i)regime|structural.break|market.condition|volatility.cluster|non.stationar|GARCH|changing.dynamics|bull.bear"
+    antipatterns:
+      - "(?i)markets?.are?.predictable|past.predict.future|stable.relationship|patterns?.always.repeat"
+    failure_severity: suspicious
+    failure_message: >
+      Forecasting guidance assumes stable market dynamics. Financial markets
+      exhibit regime changes — models must account for changing volatility
+      and correlation structures.
+    success_message: >
+      Acknowledges regime changes and non-stationarity in market dynamics.
+
+  - name: return-distribution-assumptions
+    description: >
+      Financial analysis must address the non-normality of returns. Financial
+      returns exhibit skewness, excess kurtosis (fat tails), and volatility
+      clustering that violate Gaussian assumptions.
+    applicability_patterns:
+      - "(?i)return.distribution|statistical.model|risk.model|normal.distribution|portfolio.analytics"
+    required_patterns:
+      - "(?i)fat.tail|kurtosis|skew|non.normal|heavy.tail|leptokurt|Student.t|volatility.cluster|\\bGARCH\\b"
+    antipatterns:
+      - "(?i)returns.are.normal|assume.normal.distribution|Gaussian.is.fine|bell.curve.fits"
+    failure_severity: suspicious
+    failure_message: >
+      Analysis assumes normally distributed returns. Financial returns
+      exhibit fat tails, skewness, and volatility clustering that make
+      Gaussian assumptions unreliable.
+    success_message: >
+      Discusses non-normal return distributions and their implications.

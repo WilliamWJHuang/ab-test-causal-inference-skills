@@ -1,0 +1,60 @@
+domain: finance
+subdomain: portfolio-allocation
+version: "1.0.0"
+rules:
+  - name: mpt-limitations
+    description: >
+      Modern Portfolio Theory (MPT) guidance must acknowledge its assumptions
+      and limitations: stable correlations, normally distributed returns,
+      and sensitivity to estimation error in expected returns and covariance.
+    applicability_patterns:
+      - "(?i)portfolio.optimization|mean.variance|efficient.frontier|modern.portfolio|markowitz|asset.allocation"
+    required_patterns:
+      - "(?i)estimation.error|input.sensitivity|robust|shrinkage|Black.Litterman|resampl|limitation|assumption|caveat"
+    antipatterns:
+      - "(?i)efficient.frontier\\s+(is\\s+)?optimal|mean.variance\\s+(is\\s+)?the.best|markowitz\\s+solves"
+    failure_severity: incorrect
+    failure_message: >
+      Portfolio optimization guidance presents MPT without acknowledging
+      estimation error sensitivity. Mean-variance optimizers are notoriously
+      sensitive to small changes in expected returns.
+    success_message: >
+      Correctly acknowledges MPT limitations and estimation error issues.
+
+  - name: benchmark-selection
+    description: >
+      Portfolio performance evaluation must use an appropriate benchmark.
+      Comparing an equity portfolio to a risk-free rate, or a sector fund
+      to the S&P 500, is misleading.
+    applicability_patterns:
+      - "(?i)benchmark|performance.evaluation|alpha|active.return|track.+error"
+    required_patterns:
+      - "(?i)appropriate.benchmark|style.match|factor.exposure|benchmark.selection|peer.comparison|investable"
+    antipatterns:
+      - "(?i)always.compare.to.S.P|S.P.500.is.the.benchmark|one.benchmark.fits.all"
+    failure_severity: suspicious
+    failure_message: >
+      Performance evaluation guidance doesn't discuss appropriate benchmark
+      selection. Mismatched benchmarks create misleading alpha estimates.
+    success_message: >
+      Discusses appropriate benchmark selection for performance evaluation.
+
+  - name: diversification-depth
+    description: >
+      Diversification guidance must go beyond naive equal-weighting or simple
+      stock counting. True diversification requires considering correlation
+      structure, factor exposures, concentration risk, and tail dependence.
+    applicability_patterns:
+      - "(?i)diversif|asset.allocation|portfolio.construction|concentration"
+    required_patterns:
+      - "(?i)correlation|factor.exposure|sector.exposure|geographic|tail.dependence|concentration.risk|risk.parity"
+    antipatterns:
+      - "(?i)just.buy.more.stocks|equal.weight.is.optimal|more.stocks.means.more.diversif"
+    failure_severity: suspicious
+    failure_message: >
+      Diversification guidance is superficial. True diversification requires
+      understanding correlation structure and factor exposures, not just
+      holding more assets.
+    success_message: >
+      Discusses diversification with appropriate depth including correlations
+      and factor exposures.
