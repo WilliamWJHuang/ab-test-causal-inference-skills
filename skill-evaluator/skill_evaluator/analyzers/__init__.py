@@ -5,6 +5,7 @@ from .security import SecurityAnalyzer
 from .quality import QualityAnalyzer
 from .maintenance import MaintenanceAnalyzer
 from .domain import DomainCorrectnessAnalyzer
+from .llm_judge import LlmJudge
 
 __all__ = [
     "StructuralAnalyzer",
@@ -12,4 +13,5 @@ __all__ = [
     "QualityAnalyzer",
     "MaintenanceAnalyzer",
     "DomainCorrectnessAnalyzer",
+    "LlmJudge",
 ]

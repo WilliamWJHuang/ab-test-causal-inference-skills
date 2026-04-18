@@ -54,12 +54,27 @@ from skill_evaluator.scorers import CompositeScorer, ReportGenerator
     default=None,
     help="Exit with code 1 if overall score is below this threshold (for CI).",
 )
+@click.option(
+    "--llm",
+    "llm_provider",
+    type=click.Choice(["openai", "anthropic", "google"]),
+    default=None,
+    help="Enable LLM semantic verification of domain rules (requires API key in env).",
+)
+@click.option(
+    "--llm-model",
+    type=str,
+    default=None,
+    help="Override the default LLM model (e.g., 'gpt-4o-mini', 'gemini-2.0-flash').",
+)
 def main(
     path: str,
     output_format: str,
     forced_domain: str | None,
     weights: str | None,
     fail_below: float | None,
+    llm_provider: str | None,
+    llm_model: str | None,
 ) -> None:
     """Evaluate an agent skill before installing it.
 
@@ -91,7 +106,10 @@ def main(
     structural_result = structural_analyzer.analyze(skill_path)
     security_result = security_analyzer.analyze(skill_path)
     quality_result = quality_analyzer.analyze(skill_path)
-    domain_result = domain_analyzer.analyze(skill_path, domain=forced_domain)
+    domain_result = domain_analyzer.analyze(
+        skill_path, domain=forced_domain,
+        llm_provider=llm_provider, llm_model=llm_model,
+    )
     maintenance_result = maintenance_analyzer.analyze(skill_path)
 
     # ── Compute composite ─────────────────────────────────────────────────

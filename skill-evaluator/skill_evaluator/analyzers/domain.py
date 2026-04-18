@@ -79,9 +79,21 @@ class DomainCorrectnessAnalyzer:
         self._rule_cache: dict[str, list[DomainRule]] = {}
 
     def analyze(
-        self, skill_path: Path, domain: str | None = None
+        self,
+        skill_path: Path,
+        domain: str | None = None,
+        llm_provider: str | None = None,
+        llm_model: str | None = None,
     ) -> DomainResult:
-        """Analyze a skill for domain correctness."""
+        """Analyze a skill for domain correctness.
+
+        Args:
+            skill_path: Path to skill directory or SKILL.md file.
+            domain: Force a specific domain (auto-detected if None).
+            llm_provider: Optional LLM provider for semantic verification
+                         ("openai", "anthropic", or "google").
+            llm_model: Optional model override for the LLM provider.
+        """
         result = DomainResult()
 
         # Read skill content
@@ -137,9 +149,13 @@ class DomainCorrectnessAnalyzer:
             result.score = 50.0
             return result
 
-        # Check each rule
+        # Check each rule with regex
         for rule in rules:
             self._check_rule(rule, full_content, result)
+
+        # LLM semantic re-check on regex failures (if requested)
+        if llm_provider:
+            self._llm_recheck(llm_provider, llm_model, full_content, rules, result)
 
         result.score = self._compute_score(result)
         return result
@@ -339,6 +355,92 @@ class DomainCorrectnessAnalyzer:
                     message=rule.success_message or f"Passed: {rule.name}",
                     rule_name=rule.name,
                 )
+            )
+
+    def _llm_recheck(
+        self,
+        llm_provider: str,
+        llm_model: str | None,
+        content: str,
+        rules: list[DomainRule],
+        result: DomainResult,
+    ) -> None:
+        """Re-check regex-failed rules using LLM semantic analysis.
+
+        Only re-checks rules that failed due to missing required patterns
+        (code D101). Antipattern matches (code D100) are exact string matches
+        and are NEVER overridden by the LLM.
+        """
+        import sys
+
+        from skill_evaluator.analyzers.llm_judge import LlmJudge
+
+        # Collect regex failures eligible for LLM re-check
+        # D101 = missing required pattern (could be false negative)
+        # D100 = antipattern match (exact string — never override)
+        eligible_findings = [
+            f for f in result.findings
+            if f.code == "D101" and f.severity in ("suspicious", "incorrect")
+        ]
+
+        if not eligible_findings:
+            return
+
+        # Map findings back to their rules
+        finding_rules = []
+        for finding in eligible_findings:
+            for rule in rules:
+                if rule.name == finding.rule_name:
+                    finding_rules.append(rule)
+                    break
+
+        if not finding_rules:
+            return
+
+        # Initialize LLM judge
+        try:
+            judge = LlmJudge(provider=llm_provider, model=llm_model)
+        except (ValueError, EnvironmentError) as e:
+            print(f"  [LLM] Skipping: {e}", file=sys.stderr)
+            return
+
+        print(
+            f"  [LLM] Re-checking {len(finding_rules)} rules with "
+            f"{judge.provider}/{judge.model}...",
+            file=sys.stderr,
+        )
+
+        verdicts = judge.verify_failed_rules(content, finding_rules, result.domain)
+
+        # Apply LLM overrides
+        overrides = 0
+        for verdict in verdicts:
+            if not verdict.override_regex:
+                continue
+
+            # Find the matching finding and flip it
+            for i, finding in enumerate(result.findings):
+                if finding.rule_name == verdict.rule_name and finding.code == "D101":
+                    # Replace the FAIL finding with a PASS + LLM explanation
+                    result.findings[i] = DomainFinding(
+                        severity="correct",
+                        code="D200",
+                        message=(
+                            f"[LLM-verified] {finding.rule_name}: "
+                            f"{verdict.explanation}"
+                        ),
+                        rule_name=finding.rule_name,
+                        detail=f"Evidence: \"{verdict.evidence}\"" if verdict.evidence else "",
+                    )
+                    result.rules_passed += 1
+                    result.rules_failed -= 1
+                    overrides += 1
+                    break
+
+        if overrides:
+            print(
+                f"  [LLM] Overrode {overrides} regex false negatives.",
+                file=sys.stderr,
             )
 
     def _compute_score(self, result: DomainResult) -> float:
