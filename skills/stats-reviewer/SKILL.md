@@ -189,9 +189,22 @@ If user says "I'm aware of this limitation" or "skip this check":
 
 ## Common Mistakes to PREVENT
 
-- NEVER say "the result is significant" without specifying the alpha level and test used
+- NEVER claim a result is statistically significant without specifying the alpha level and test used
 - NEVER interpret a non-significant p-value as "no effect" — it means insufficient evidence
 - NEVER ignore the multiple comparisons problem
 - NEVER report p-values without effect sizes and confidence intervals
 - NEVER compare models trained with different seeds without reporting variability
 - NEVER accept a result at face value without checking assumptions
+
+## Simpson's Paradox Awareness
+
+When reviewing stratified or subgroup analyses, check for Simpson's Paradox:
+- A trend that appears in aggregate data may **reverse** when data is split by a confounding variable
+- Always ask: "Could this aggregate result be misleading due to an unobserved grouping variable?"
+- If subgroup analyses show directionally different results from the aggregate, flag it immediately
+- Common in: medical trials (drug efficacy by severity), hiring data (gender by department), education (school vs. district level)
+
+Example: Drug A has higher survival overall, but Drug B has higher survival in both mild AND severe cases. The paradox arises because Drug B is disproportionately given to severe patients.
+
+Whenever results seem surprising, check whether a **lurking variable** could be driving a reversal.
+

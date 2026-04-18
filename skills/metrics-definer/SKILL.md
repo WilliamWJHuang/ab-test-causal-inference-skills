@@ -132,7 +132,48 @@ Read `references/anti-patterns.md` and check for:
 | **Ratio inflation** | Small denominator makes ratio unreliable | Set minimum denominator threshold |
 | **Surrogate dilution** | Proxy metric drifts from true goal | Validate periodically against ground truth |
 
-### Step 7: Generate Metric Specification Document
+### Step 7: Sequential Testing & the Peeking Problem
+
+If the experiment will be monitored while running (common in industry):
+
+- **Never** check results early and stop when p < 0.05 — this inflates false positive rates dramatically
+- Use **sequential testing** methods if early stopping is desired:
+  - **Group sequential designs** (O'Brien–Fleming, Pocock boundaries)
+  - **Always-valid p-values** (mSPRT / mixture sequential probability ratio test)
+  - **Bayesian monitoring** with pre-specified decision thresholds
+- Pre-register the monitoring schedule (e.g., "check at 50%, 75%, 100% of planned sample")
+- If peeking without correction: acknowledge the inflated alpha and apply a penalty
+
+### Step 8: Sample Ratio Mismatch (SRM) Check
+
+Before interpreting ANY experiment result, check for SRM:
+
+1. **Compute observed allocation ratio** vs. expected (e.g., 50/50)
+2. **Run a chi-squared test** for deviation from expected ratio
+3. If SRM detected (p < 0.001):
+   - **Do NOT interpret the experiment results** — they are likely biased
+   - Investigate root causes: logging bugs, bot filtering differences, assignment errors, browser redirects
+   - Consider invalidating the experiment entirely
+
+SRM is the single most important diagnostic — if the sample ratio is off, nothing else matters.
+
+### Step 9: Interference & Spillovers
+
+For experiments where units may influence each other:
+
+| Scenario | Risk | Solution |
+|:---|:---|:---|
+| **Marketplace** (buyers/sellers) | Treatment on sellers affects buyer experience | Cluster randomization by market |
+| **Social networks** | Treatment users influence control friends | Ego-cluster or graph-cluster randomization |
+| **Geographic** (delivery, ride-share) | Spatial spillover between zones | Switchback designs or geo-randomization |
+| **Shared resources** | Treatment increases server load for all | Time-based switchback design |
+
+If interference is possible:
+- Use **cluster-randomized** designs (randomize at the cluster level, not individual)
+- Consider **switchback designs** for temporal spillovers
+- Report **SUTVA violations** (Stable Unit Treatment Value Assumption) if detected
+
+### Step 10: Generate Metric Specification Document
 
 ```
 ## Metric Specification
@@ -156,6 +197,8 @@ Read `references/anti-patterns.md` and check for:
 - Decomposition: [primary] = [component1] × [component2] × ...
 
 ### Anti-Pattern Check: ✅ Passed / ⚠️ See notes
+### SRM Check Plan: [chi-squared test at p < 0.001 threshold]
+### Sequential Testing: [method if applicable]
 ```
 
 ## Common Mistakes to PREVENT
@@ -165,3 +208,7 @@ Read `references/anti-patterns.md` and check for:
 - NEVER ignore guardrail metrics — the winner might be causing harm
 - NEVER use a metric you can't explain to a non-technical stakeholder
 - NEVER optimize a proxy without periodically validating against the true objective
+- NEVER peek at results without sequential testing correction
+- NEVER skip the SRM check — a broken randomization invalidates everything
+- NEVER ignore potential interference between experimental units
+
