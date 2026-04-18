@@ -223,6 +223,11 @@ def parse_llm_response(raw: str, expected_rules: list[DomainRule]) -> list[LlmVe
     """
     # Strip markdown code fences if present
     cleaned = raw.strip()
+
+    # Guard against extremely large responses (prevents regex backtracking)
+    if len(cleaned) > 50_000:
+        return _fallback_verdicts(expected_rules)
+
     if cleaned.startswith("```"):
         lines = cleaned.split("\n")
         # Remove first and last fence lines

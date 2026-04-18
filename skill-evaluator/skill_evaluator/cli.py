@@ -59,7 +59,7 @@ from skill_evaluator.scorers import CompositeScorer, ReportGenerator
     "llm_provider",
     type=click.Choice(["openai", "anthropic", "google"]),
     default=None,
-    help="Enable LLM semantic verification of domain rules (requires API key in env).",
+    help="Enable LLM semantic verification of domain rules. Note: sends skill content to the provider's API. Requires API key in env.",
 )
 @click.option(
     "--llm-model",
