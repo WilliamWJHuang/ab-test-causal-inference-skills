@@ -168,26 +168,7 @@ rules:
 
 For domains with many rules, you can organize them into a **directory** instead of a single file. Create `skill_evaluator/domains/my-domain/` and place multiple `.yaml` files inside — all rules are automatically merged at load time.
 
-We currently ship with Statistics, Causal Inference, Experiment Design, Data Science, and Digital Marketing. This is meant to be extensible. If you have domain expertise in another area (e.g., finance, healthcare, NLP evaluation, survey design, product management) and want to contribute a rule set, open a PR and we'll review it. The more domains covered, the more useful this tool becomes for everyone.
-
----
-
-## CI Integration
-
-### GitHub Actions
-
-```yaml
-- name: Evaluate Skills
-  run: |
-    pip install -e ./skill-evaluator
-    skill-eval ./skills/my-skill/ --fail-below 70 --format json
-```
-
-### As a Pre-commit Hook
-
-```bash
-skill-eval ./skills/ --fail-below 60
-```
+We currently ship with 7 domains: Statistics, Causal Inference, Experiment Design, Data Science, Digital Marketing, and Finance — totaling 91 rules. This is meant to be extensible. If you have domain expertise in another area (e.g., healthcare, product management, cybersecurity, NLP evaluation) and want to contribute a rule set, open a PR and we'll review it. The more domains covered, the more useful this tool becomes for everyone.
 
 ---
 
