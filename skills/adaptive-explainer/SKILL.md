@@ -179,6 +179,9 @@ When explaining to Level 1 users, translate these terms:
 | Parallel trends | Both groups were heading in the same direction before the change — required for DiD |
 | SUTVA | The assumption that one person's treatment doesn't affect another person's outcome |
 | Instrumental variable | Something that affects whether someone gets treated, but doesn't directly affect the outcome |
+| Multiple comparisons / correction | When you test many things at once, you're more likely to find a "significant" result by chance. Corrections like Bonferroni or FDR adjust for this |
+| Non-parametric test | A test that doesn't assume your data follows a bell curve — Mann-Whitney, Wilcoxon rank-sum, or bootstrap. Use when data is skewed, ordinal, or has small samples |
+| Seed / reproducibility | The random seed controls the starting point for any randomized computation. Running with multiple seeds shows whether results are stable or fragile |
 
 ## Interaction Pattern
 
@@ -189,3 +192,25 @@ normally output a technical instruction, apply this filter:
 2. **Translate** technical terms to the appropriate level
 3. **Preserve accuracy** — never oversimplify to the point of being wrong
 4. **Offer depth** — after a simplified explanation, say "Want me to go deeper into the technical details?" This lets beginners stay comfortable and lets intermediate users level up.
+
+## Example: Level-Adapted Power Analysis
+
+```python
+# Level 2/3 — show the code directly
+from statsmodels.stats.power import NormalIndepPower
+
+analysis = NormalIndepPower()
+n = analysis.solve_power(
+    effect_size=0.1,    # Cohen's d or standardized MDE
+    alpha=0.05,         # significance level
+    power=0.8,          # 80% power
+    ratio=1.0,          # equal group sizes
+    alternative='two-sided'
+)
+print(f"Required sample size per group: {int(n)}")
+
+# Level 1 — explain WHAT this does before showing code:
+# "This calculates how many users you need in each group.
+#  effect_size=0.1 means we want to detect a 10% improvement.
+#  power=0.8 means we want an 80% chance of catching a real effect."
+```

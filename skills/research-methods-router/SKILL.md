@@ -98,8 +98,64 @@ For common scenarios, suggest a multi-skill workflow:
 2. If causal claims are made: route to `causal-inference-advisor`
 3. If data quality is suspect: route to `data-quality-auditor`
 
+## Key Methodological Concepts for Routing
+
+When routing, be aware of these common methodological considerations — they help
+you ask better clarifying questions and route to the right skill.
+
+### Statistical Foundations
+
+- **Parametric vs non-parametric**: If the data is skewed or ordinal, non-parametric
+  methods (Mann-Whitney, Kruskal-Wallis, bootstrap) may be more appropriate than
+  t-tests or ANOVA. Check normality assumptions for small samples; for large samples,
+  the Central Limit Theorem provides robustness.
+- **Effect sizes over p-values**: Always route to skills that report effect sizes
+  (Cohen's d, odds ratios) and confidence intervals, not just p-values.
+  Statistical significance ≠ practical significance (ASA Statement 2016).
+- **Multiple comparisons**: When the user plans to test multiple hypotheses or
+  compare many groups, ensure the downstream skill applies Bonferroni, Holm,
+  or false discovery rate (FDR/BH) corrections.
+- **Seed sensitivity**: For any ML or simulation workflow, ensure results are
+  checked across multiple random seeds — single-seed results can be misleading.
+  Report mean ± std across seeds.
+
+### Choosing Between Paradigms
+
+- **Frequentist**: Default for A/B tests, hypothesis testing, standard experiments.
+  Results in p-values and confidence intervals.
+- **Bayesian**: Better for small samples, incorporating prior knowledge, or when
+  the user needs posterior probabilities rather than p-values. Results in credible
+  intervals and posterior distributions.
+- Route to the appropriate framework based on the user's needs and context.
+
+### Regression Awareness
+
+When the user mentions regression, ensure the downstream skill checks assumptions:
+- **Linearity**: residual plots should show no pattern
+- **Homoscedasticity**: constant variance of residuals (check with Breusch-Pagan)
+- **No multicollinearity**: check VIF (variance inflation factor)
+- **Residual diagnostics**: Q-Q plots, autocorrelation (Durbin-Watson)
+
+For OLS (ordinary least squares), these assumptions drive whether the estimates
+and standard errors are trustworthy.
+
+### Confidence Interval Interpretation
+
+When routing to any skill that reports confidence intervals, ensure correct
+interpretation is maintained:
+- A 95% CI does **NOT** mean "95% probability the true value is in this interval"
+- It means the **procedure** produces intervals that contain the true value 95%
+  of the time (repeated sampling / coverage interpretation)
+- This distinction matters — misinterpretation leads to overconfidence
+
+---
+
 ## Common Mistakes to PREVENT
 
 - NEVER let the user jump straight to analysis without clarifying the question
 - NEVER assume the user knows which method they need — ask first
 - NEVER skip data quality checks when the data source is unclear
+- NEVER accept a single p-value as sufficient evidence — demand effect sizes
+  and confidence intervals from downstream skills
+- NEVER let users compare many groups or outcomes without ensuring multiple
+  comparison corrections will be applied

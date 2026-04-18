@@ -153,3 +153,50 @@ Compare sample characteristics to the target population:
 - NEVER remove outliers without justification
 - NEVER ignore differential attrition in experiments
 - NEVER assume your sample represents the population without checking
+
+---
+
+## Step 8: Cross-Validation Readiness
+
+Before handing data to a modeling pipeline, verify the validation strategy is appropriate:
+
+| Data Characteristic | Recommended CV Strategy |
+|:---|:---|
+| **i.i.d. observations** | Stratified k-fold (preserves class distribution) |
+| **Temporal ordering** | Time series split — never randomly shuffle |
+| **Grouped observations** (same user, same store) | Group k-fold — all observations from one group in same fold |
+| **Rare events / class imbalance** | Stratified k-fold + consider oversampling within folds only |
+| **Small dataset (< 1000)** | Leave-one-out or nested CV |
+
+⚠️ **Leakage risk**: All preprocessing (scaling, imputation, feature selection) must happen **inside** each fold, not on the full dataset. Use `sklearn.pipeline.Pipeline` to enforce this.
+
+## Step 9: Pre-Modeling Checklist
+
+### Class Imbalance Assessment
+- Check class distribution: if the minority class is < 10%, flag it
+- **Do NOT blindly oversample** — naive oversampling (including SMOTE) can overfit, especially in high-dimensional data
+- Recommended approaches by context:
+  - Cost-sensitive learning (class weights) — simplest, often sufficient
+  - Threshold tuning on the ROC curve — adjust decision boundary post-training
+  - SMOTE with cross-validation — oversample only within training folds
+  - Focal loss — for deep learning on imbalanced data
+- Stratified sampling is essential for any data splitting
+
+### Evaluation Metric Alignment
+- **Never use accuracy alone** on imbalanced data — 95% accuracy means nothing if the positive class is 5%
+- Align metrics with business objectives:
+  - Fraud detection → precision/recall tradeoff, AUC-PR
+  - Medical diagnosis → sensitivity (recall) vs. specificity
+  - Churn prediction → expected value framework (cost of false negative vs. false positive)
+- Report **calibration** for probability outputs (reliability diagrams)
+- Consider the full cost matrix, not just statistical metrics
+
+### Interpretability Requirements
+- For high-stakes domains (healthcare, finance, hiring, criminal justice):
+  model interpretability is increasingly **required by regulation** (EU AI Act)
+- Recommended tools:
+  - **SHAP** — theoretically grounded feature importance (Shapley values)
+  - **LIME** — local, model-agnostic explanations
+  - **Partial dependence / ICE plots** — understand feature effects
+- Flag if a black-box model is being used where a transparent alternative
+  (logistic regression, decision tree, GAM) might perform comparably
